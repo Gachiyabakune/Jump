@@ -4,14 +4,21 @@
 #include "Map.h"
 #include <DxLib.h>
 
-#define G                (0.3F)                         // キャラに掛かる重力加速度
-#define JUMP_POWER       (10.0f)                         // キャラのジャンプ力
-#define SPEED            (5.0f)                         // キャラの移動スピード
+namespace
+{
+	constexpr float Gravity = 0.3f;			//重力
+	constexpr float JumpPowerMax = 10.0f;	//最大ジャンプ力
+	constexpr float JumpPowerMin = 8.0f;	//最小ジャンプ力
+	constexpr float MoveSpeed = 5.0f;		//移動速度
+
+	constexpr int ChargeTime = 10;			//ためジャンプ
+}
 
 Player::Player() : 
 	x(0),
 	y(0),
-	pmap(nullptr)
+	pmap(nullptr),
+	jumpPower(0)
 {
 }
 
@@ -23,8 +30,8 @@ void Player::init()
 {
 	m_size = 32;
 	// プレイヤーの座標を初期化
-	x = Game::kScreenWidth - 32 * 18;
-	y = Game::kScreenHight - 32 * 10;
+	x = Game::kScreenWidth - 32 * 12;
+	y = Game::kScreenHight * MapStage - MapSize;
 
 	// プレイヤーの落下速度を初期化
 	fallSpeed = 0.0f;
@@ -52,26 +59,49 @@ void Player::updata()
 	// 左右の移動を見る
 	if (Pad::isPress(PAD_INPUT_LEFT))
 	{
-		//idel = false;
-		MoveX -= SPEED;
+		MoveX -= MoveSpeed;
+		//テスト用
+		if (Pad::isPress(PAD_INPUT_6))
+		{
+			MoveX -= MoveSpeed;
+		}
 	}
 	if (Pad::isPress(PAD_INPUT_RIGHT))
 	{
-		//idel = false;
-		MoveX += SPEED;
+		//テスト用
+		if (Pad::isPress(PAD_INPUT_6))
+		{
+			MoveX += MoveSpeed;
+		}
+		MoveX += MoveSpeed;
 	}
 	// 地に足が着いている場合のみジャンプボタン(ボタン１ or Ｚキー)を見る
 	if (jumpFlag == false)
 	{
+		if (Pad::isPress(PAD_INPUT_1))
+		{
+			//ジャンプパワーチャージ
+			jumpPower++;
+		}
 		if (Pad::isRelase(PAD_INPUT_1))
 		{
-			//idel = false;
-			fallSpeed = -JUMP_POWER;
+			//ため段階が短いと小ジャンプ
+			if (ChargeTime >jumpPower)
+			{
+				fallSpeed = -JumpPowerMin;
+				jumpPower = 0;
+			}
+			//長いと大ジャンプ
+			if (jumpPower >= ChargeTime)
+			{
+				fallSpeed = -JumpPowerMax;
+				jumpPower = 0;
+			}
 			jumpFlag = TRUE;
 		}
 	}
 	// 重力
-	fallSpeed += G;
+	fallSpeed += Gravity;
 
 	// 落下速度を移動量に加える
 	MoveY = fallSpeed;
@@ -82,8 +112,31 @@ void Player::updata()
 
 void Player::draw()
 {
+	//キャラクター描画
 	DrawGraph((int)(x - m_size * 0.5f),
 		(int)(y - m_size * 0.5f + pmap->getoffset()), Cchip[0], TRUE);
+
+	//四角
+	if (jumpFlag == false)
+	{
+		DrawBox((int)(x - m_size * 0.5f),
+			(int)(y - m_size * 0.5f + pmap->getoffset()),
+			(int)(x - m_size * 0.5f) + MapSize,
+			(int)(y - m_size * 0.5f + pmap->getoffset()) + MapSize,
+			GetColor(255, 0, 0), true);
+	}
+	else
+	{
+
+		DrawBox((int)(x - m_size * 0.5f),
+			(int)(y - m_size * 0.5f + pmap->getoffset()),
+			(int)(x - m_size * 0.5f) + MapSize,
+			(int)(y - m_size * 0.5f + pmap->getoffset()) + MapSize,
+			GetColor(255, 255, 0), true);
+	}
+
+	lineY = (int)(y - m_size * 0.5f + pmap->getoffset());
+	DrawFormatString(0, 0, GetColor(255, 255, 255), "%d", lineY);
 }
 
 //-----------------------------------------
@@ -150,7 +203,7 @@ int Player::movePlayer(float MoveX, float MoveY)
 
 	// 接地判定
 		// キャラクタの左下と右下の下に地面があるか調べる
-	if (pmap->GetChipParam(x - m_size * 0.5f, y + m_size * 0.5f + 1.0f) == 5)
+	if (pmap->GetChipParam(x + m_size * 0.5f - 16, y + m_size * 0.5f + 1.0f) == 5)
 	{
 		// 足場が無かったらジャンプ中にする
 		jumpFlag = TRUE;

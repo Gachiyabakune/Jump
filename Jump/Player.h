@@ -18,7 +18,11 @@ public:
 	void updata();
 	void draw();
 
+	//ステージの情報
 	void setStage(Map* map) { pmap = map; }
+
+	//Y座標を送る
+	int getPos() { return lineY; }
 
 	int movePlayer(float MoveX, float MoveY);
 	int mapHitCheck(float X, float Y, float& MoveX, float& MoveY);
@@ -30,6 +34,9 @@ private:
 	bool jumpFlag;	// プレイヤーがジャンプ中か、のフラグ
 	int	m_size;	// 画像のサイズ（縦横同じ）
 	int Cchip[CharChipAll];
-	int m_offset;
+	
+	int jumpPower;
+
+	int lineY;
 };
 

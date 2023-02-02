@@ -24,12 +24,14 @@ void SceneMain::init()
 {
 	player->setStage(map);
 	player->init();
+	map->setPlayer(player);
 	map->init();
 }
 
 SceneBase* SceneMain::update()
 {
 	player->updata();
+	map->updata();
 	if (Pad::isTrigger(PAD_INPUT_3))
 	{
 		return(new SceneResult);
