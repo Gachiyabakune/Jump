@@ -40,6 +40,7 @@ public:
 
 	//ステージの情報
 	void setStage(Map* map) { pmap = map; }
+	int gameClear() { return clearFlag; }
 
 	//Y座標を送る
 	int getPos() { return lineY; }
@@ -61,6 +62,7 @@ private:
 	int directionJump = 0;	//ジャンプ方向
 	int direction = 0;		//どの方向に飛ぶかを決める
 	bool jumpAfterInterval;	//ジャンプ後のインターバル 
+	bool clearFlag = false;
 
 	bool boundFlag;			//壁に当たり反射したか
 };

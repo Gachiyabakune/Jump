@@ -32,7 +32,8 @@ SceneBase* SceneMain::update()
 {
 	player->updata();
 	map->updata();
-	if (Pad::isTrigger(PAD_INPUT_3))
+	
+	if (player->gameClear())
 	{
 		return(new SceneResult);
 	}

@@ -244,7 +244,7 @@ void Player::draw()
 			(int)(y - m_size * 0.5f + pmap->getoffset()),
 			(int)(x - m_size * 0.5f) + MapSize,
 			(int)(y - m_size * 0.5f + pmap->getoffset()) + MapSize,
-			GetColor(255, 0, 0), true);
+			GetColor(255, 0, 0), false);
 	}
 	else
 	{
@@ -253,7 +253,7 @@ void Player::draw()
 			(int)(y - m_size * 0.5f + pmap->getoffset()),
 			(int)(x - m_size * 0.5f) + MapSize,
 			(int)(y - m_size * 0.5f + pmap->getoffset()) + MapSize,
-			GetColor(255, 255, 0), true);
+			GetColor(255, 255, 0), false);
 	}
 #ifdef _DEBUG
 	DrawFormatString(0, 0, GetColor(255, 255, 255), "%d", lineY);	//Y座標	
@@ -457,25 +457,25 @@ int Player::mapHitCheck(float X, float Y, float& MoveX, float& MoveY)
 		// 上辺に当たっていた場合
 		if (MoveY > 0.0f)
 		{
-			DxLib_End();
+			clearFlag = true;
 		}
 
 		// 下辺に当たっていた場合
 		if (MoveY < 0.0f)
 		{
-			DxLib_End();
+			clearFlag = true;
 		}
 
 		// 左辺に当たっていた場合
 		if (MoveX > 0.0f)
 		{
-			DxLib_End();
+			clearFlag = true;
 		}
 
 		// 右辺に当たっていた場合
 		if (MoveX < 0.0f)
 		{
-			DxLib_End();
+			clearFlag = true;
 		}
 
 		// ここに来たら適当な値を返す
