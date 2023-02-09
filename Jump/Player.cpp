@@ -4,20 +4,14 @@
 #include "Map.h"
 #include <DxLib.h>
 
-namespace
-{
-	constexpr float Gravity = 0.3f;			//重力
-	constexpr float JumpPowerMax = 10.0f;	//最大ジャンプ力
-	constexpr float JumpPowerMin = 8.0f;	//最小ジャンプ力
-	constexpr float MoveSpeed = 5.0f;		//移動速度
-
-	constexpr int ChargeTime = 10;			//ためジャンプ
-}
-
 Player::Player() : 
 	x(0),
 	y(0),
 	pmap(nullptr),
+	moveFlag(false),
+	jumpAfterInterval(true),
+	boundFlag(false),
+	jumpFlag(false),
 	jumpPower(0)
 {
 }
@@ -28,16 +22,15 @@ Player::~Player()
 
 void Player::init()
 {
+	//キャラのサイズ
 	m_size = 32;
+
 	// プレイヤーの座標を初期化
-	x = Game::kScreenWidth - 32 * 12;
+	x = 768 - 32 * 12;
 	y = Game::kScreenHight * MapStage - MapSize;
 
 	// プレイヤーの落下速度を初期化
 	fallSpeed = 0.0f;
-
-	// ジャンプ中フラグを倒す
-	jumpFlag = false;
 
 	//キャラクター
 	LoadDivGraph("data/char.png",
@@ -56,55 +49,183 @@ void Player::updata()
 	MoveX = 0.0f;
 	MoveY = 0.0f;
 
-	// 左右の移動を見る
-	if (Pad::isPress(PAD_INPUT_LEFT))
+	//-----左右の移動を見る-----
+	
+	//左を押している時かつジャンプ中でもない時
+	if ((Pad::isPress(PAD_INPUT_LEFT) && !moveFlag )/*|| directionJump==1*/)
 	{
 		MoveX -= MoveSpeed;
-		//テスト用
-		if (Pad::isPress(PAD_INPUT_6))
-		{
-			MoveX -= MoveSpeed;
-		}
 	}
-	if (Pad::isPress(PAD_INPUT_RIGHT))
+
+	//右を押している時かつジャンプ中でもない時
+	if ((Pad::isPress(PAD_INPUT_RIGHT) && !moveFlag )/*|| directionJump== 2*/)
 	{
-		//テスト用
-		if (Pad::isPress(PAD_INPUT_6))
-		{
-			MoveX += MoveSpeed;
-		}
 		MoveX += MoveSpeed;
 	}
+
+	//ジャンプ方向で左が選択された場合
+	if (directionJump == 1)
+	{
+		if (!boundFlag)	
+		{
+			MoveX -= MoveSpeed;	//バウンドしない間は左方向に
+		}
+		else	
+		{
+			MoveX += MoveSpeed;	//バウンドすると逆方向に
+		}
+	}
+	//ジャンプ方向で右が選択された場合
+	else if (directionJump == 2)
+	{
+		if (!boundFlag)
+		{
+			MoveX += MoveSpeed;	//バウンドしない間は右方向に
+		}
+		else
+		{
+			MoveX -= MoveSpeed;	//バウンドすると逆方向に
+		}
+	}
+
 	// 地に足が着いている場合のみジャンプボタン(ボタン１ or Ｚキー)を見る
-	if (jumpFlag == false)
+	if (!jumpFlag)
 	{
 		if (Pad::isPress(PAD_INPUT_1))
 		{
+			//ためている間は動けなくする
+			moveFlag = true;	
 			//ジャンプパワーチャージ
 			jumpPower++;
+
+			//ジャンプ中にどの方向に飛ぶのかを決定
+			if (Pad::isTrigger(PAD_INPUT_LEFT))
+			{
+				direction = 1;	//左に飛ぶなら1
+			}
+			if (Pad::isTrigger(PAD_INPUT_RIGHT))
+			{
+				direction = 2;	//右に飛ぶなら2
+			}
 		}
-		if (Pad::isRelase(PAD_INPUT_1))
+		//カウントがたまると強制ジャンプ
+		if (Pad::isRelase(PAD_INPUT_1) || jumpPower == ChargeTimeLvMax)
 		{
 			//ため段階が短いと小ジャンプ
-			if (ChargeTime >jumpPower)
+			if (ChargeTimeLv1 >= jumpPower)
 			{
-				fallSpeed = -JumpPowerMin;
-				jumpPower = 0;
+				fallSpeed = -JumpPowerLv1;
+				if (direction == 1)
+				{
+					directionJump = 1;
+				}
+				else if (direction == 2)
+				{
+					directionJump = 2;
+				}
 			}
-			//長いと大ジャンプ
-			if (jumpPower >= ChargeTime)
+			//レベル2ジャンプ
+			else if (ChargeTimeLv2 >= jumpPower && jumpPower > ChargeTimeLv1)
 			{
-				fallSpeed = -JumpPowerMax;
-				jumpPower = 0;
+				fallSpeed = -JumpPowerLv2;
+				if (direction == 1)
+				{
+					directionJump = 1;
+				}
+				else if (direction == 2)
+				{
+					directionJump = 2;
+				}
 			}
-			jumpFlag = TRUE;
+			//レベル3ジャンプ
+			else if (ChargeTimeLv3 >= jumpPower && jumpPower >= ChargeTimeLv2)
+			{
+				fallSpeed = -JumpPowerLv3;
+				if (direction == 1)
+				{
+					directionJump = 1;
+				}
+				else if (direction == 2)
+				{
+					directionJump = 2;
+				}
+			}
+			//レベル4ジャンプ
+			else if (ChargeTimeLv4 >= jumpPower && jumpPower >= ChargeTimeLv3)
+			{
+				fallSpeed = -JumpPowerLv4;
+				if (direction == 1)
+				{
+					directionJump = 1;
+				}
+				else if (direction == 2)
+				{
+					directionJump = 2;
+				}
+			}
+			//レベル5ジャンプ
+			else if (ChargeTimeLvMax > jumpPower && jumpPower >= ChargeTimeLv4)
+			{
+				fallSpeed = -JumpPowerLv5;
+				if (direction == 1)
+				{
+					directionJump = 1;
+				}
+				else if (direction == 2)
+				{
+					directionJump = 2;
+				}
+			}
+			//レベルMaxジャンプ
+			else if (ChargeTimeLvMax == jumpPower)
+			{
+				fallSpeed = -JumpPowerLvMax;
+				if (direction == 1)
+				{
+					directionJump = 1;
+				}
+				else if (direction == 2)
+				{
+					directionJump = 2;
+				}
+			}
+
+			jumpFlag = true;				//ジャンプ中にフラグを変更
+			jumpAfterInterval = false;		//ジャンプ後のインターバル
+			jumpPower = 0;					//ジャンプパワーを元に戻す
 		}
 	}
+	//飛んでいないときに必要な情報を初期化する
+	if (!jumpFlag && jumpAfterInterval == false)
+	{
+		moveFlag = false;
+		directionJump = 0;
+		direction = 0;
+		jumpAfterInterval = true;
+		boundFlag = false;
+	}
+
+	//デバック用
+#ifdef _DEBUG
+	if (Pad::isPress(PAD_INPUT_4))
+	{
+		y -= 10;
+		//printfDx("デバック");
+	}
+	else
+	{
+		// 重力
+		fallSpeed += Gravity;
+	}
+#else
 	// 重力
 	fallSpeed += Gravity;
-
+#endif
 	// 落下速度を移動量に加える
 	MoveY = fallSpeed;
+
+	//lineY
+	lineY = (int)(y - m_size * 0.5f + pmap->getoffset());
 
 	// 移動量に基づいてキャラクタの座標を移動
 	movePlayer(MoveX, MoveY);
@@ -116,7 +237,7 @@ void Player::draw()
 	DrawGraph((int)(x - m_size * 0.5f),
 		(int)(y - m_size * 0.5f + pmap->getoffset()), Cchip[0], TRUE);
 
-	//四角
+	//四角 飛べるときは赤色,飛べない時は黄色
 	if (jumpFlag == false)
 	{
 		DrawBox((int)(x - m_size * 0.5f),
@@ -134,9 +255,23 @@ void Player::draw()
 			(int)(y - m_size * 0.5f + pmap->getoffset()) + MapSize,
 			GetColor(255, 255, 0), true);
 	}
-
-	lineY = (int)(y - m_size * 0.5f + pmap->getoffset());
-	DrawFormatString(0, 0, GetColor(255, 255, 255), "%d", lineY);
+#ifdef _DEBUG
+	DrawFormatString(0, 0, GetColor(255, 255, 255), "%d", lineY);	//Y座標	
+	DrawFormatString(0, 20, GetColor(255, 255, 255), "%d", (int)(x - m_size * 0.5f));	//X座標
+	if (direction == 1)
+	{
+		DrawString(0, 40, "左", GetColor(255, 255, 255));	//左方向に飛ぶ
+	}
+	else if (direction == 2)
+	{
+		DrawString(0, 40, "右", GetColor(255, 255, 255));	//右方向に飛ぶ
+	}
+	else
+	{
+		DrawString(0, 40, "真上", GetColor(255, 255, 255));	//真上に飛ぶ
+	}
+	DrawFormatString(0, 60, GetColor(255, 255, 255), "%d", jumpPower);	//ジャンプパワー
+#endif
 }
 
 //-----------------------------------------
@@ -181,6 +316,7 @@ int Player::movePlayer(float MoveX, float MoveY)
 	{
 		fallSpeed *= -1.0f;
 	}
+
 
 	// 補正された上下移動成分を加算して実際に移動。あたってなかったらそのまま計算される
 	y += MoveY;
@@ -234,7 +370,7 @@ int Player::mapHitCheck(float X, float Y, float& MoveX, float& MoveY)
 	afterY = Y + MoveY;
 
 	// 当たり判定のあるブロックに当たっているかチェック
-	if (pmap->GetChipParam(afterX, afterY) == 10)
+	if (pmap->GetChipParam(afterX, afterY) == 10 || pmap->GetChipParam(afterX, afterY) == 2)
 	{
 		float blockLeftX, blockTopY, blockRightX, blockBottomY;
 
@@ -271,7 +407,14 @@ int Player::mapHitCheck(float X, float Y, float& MoveX, float& MoveY)
 		{
 			// 移動量を補正する
 			MoveX = blockLeftX - X - 1.0f;
-
+			if (!boundFlag)
+			{
+				boundFlag = true;
+			}
+			else
+			{
+				boundFlag = false;
+			}
 			// 左辺に当たったと返す
 			return 1;
 		}
@@ -281,7 +424,16 @@ int Player::mapHitCheck(float X, float Y, float& MoveX, float& MoveY)
 		{
 			// 移動量を補正する
 			MoveX = blockRightX - X + 1.0f;
-
+			//壁に当たると反射フラグをオン
+			if (!boundFlag)
+			{
+				boundFlag = true;
+			}
+			//もう一回当たると元に戻す
+			else
+			{
+				boundFlag = false;
+			}
 			// 右辺に当たったと返す
 			return 2;
 		}
@@ -289,7 +441,46 @@ int Player::mapHitCheck(float X, float Y, float& MoveX, float& MoveY)
 		// ここに来たら適当な値を返す
 		return 4;
 	}
+	// 当たり判定のあるブロックに当たっているかチェック
+	if (pmap->GetChipParam(afterX, afterY) == 10 || pmap->GetChipParam(afterX, afterY) == 3)
+	{
+		float blockLeftX, blockTopY, blockRightX, blockBottomY;
 
+		// 当たっていたら壁から離す処理を行う
+		// ブロックの上下左右の座標を算出
+		blockLeftX = (float)((int)afterX / MapSize) * MapSize;			// 左辺の X 座標
+		blockRightX = (float)((int)afterX / MapSize + 1) * MapSize;		// 右辺の X 座標
+
+		blockTopY = (float)((int)afterY / MapSize) * MapSize;			// 上辺の Y 座標
+		blockBottomY = (float)((int)afterY / MapSize + 1) * MapSize;	// 下辺の Y 座標
+
+		// 上辺に当たっていた場合
+		if (MoveY > 0.0f)
+		{
+			DxLib_End();
+		}
+
+		// 下辺に当たっていた場合
+		if (MoveY < 0.0f)
+		{
+			DxLib_End();
+		}
+
+		// 左辺に当たっていた場合
+		if (MoveX > 0.0f)
+		{
+			DxLib_End();
+		}
+
+		// 右辺に当たっていた場合
+		if (MoveX < 0.0f)
+		{
+			DxLib_End();
+		}
+
+		// ここに来たら適当な値を返す
+		return 4;
+	}
 	// どこにも当たらなかったと返す
 	return 0;
 }

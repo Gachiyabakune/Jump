@@ -9,7 +9,7 @@ namespace
 	constexpr int MapChipX = 10;  // 横10種類
 	constexpr int MapChipY = 4;   // 縦4種類1
 	constexpr int MapChipAll = MapChipX * MapChipY; // 合計40個
-	constexpr int MapStage = 3;										//ステージ数
+	constexpr int MapStage = 10;		//ステージ数
 	constexpr int NUM_MAP_X = Game::kScreenWidth / MapSize; 
 	constexpr int NUM_MAP_Y = (Game::kScreenHight / MapSize) * MapStage; 
 
@@ -36,5 +36,8 @@ private:
 	int Mchip[MapChipAll];
 	int nowStage;
 	int mapChangeInterval;
+	int skyH;
+	int cloudH;
+	int cloudH2;
 };
 

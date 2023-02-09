@@ -21,11 +21,8 @@ void SceneTitle::init()
 }
 
 SceneBase* SceneTitle::update()
-{
-	//ゲームスタート
-	//if (Pad::isTrigger(PAD_INPUT_1))
-	
-	if(CheckHitKey(KEY_INPUT_RETURN) == 1)
+{	
+	if(Pad::isTrigger(PAD_INPUT_2))
 	{
 		switch (NowSelect)
 		{
@@ -56,13 +53,13 @@ SceneBase* SceneTitle::update()
 	//上
 	if (Pad::isTrigger(PAD_INPUT_UP)&& m_interval == 0)
 	{
-		NowSelect = (NowSelect + 1) % eMenu_Num;//選択状態を一つ下げる
+		NowSelect = (NowSelect + (eMenu_Num - 1)) % eMenu_Num;//選択状態を一つ上げる
 		m_interval = 10;
 	}
 	//下
 	if (Pad::isTrigger(PAD_INPUT_DOWN)&& m_interval == 0)
 	{
-		NowSelect = (NowSelect + (eMenu_Num - 1)) % eMenu_Num;//選択状態を一つ上げる
+		NowSelect = (NowSelect + 1) % eMenu_Num;//選択状態を一つ下げる
 		m_interval = 10;
 	}
 	//インターバル
