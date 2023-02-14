@@ -210,7 +210,6 @@ void Player::updata()
 	if (Pad::isPress(PAD_INPUT_4))
 	{
 		y -= 10;
-		//printfDx("デバック");
 	}
 	else
 	{
@@ -224,7 +223,7 @@ void Player::updata()
 	// 落下速度を移動量に加える
 	MoveY = fallSpeed;
 
-	//lineY
+	//lineYにY座標のoffset込みの数値を代入
 	lineY = (int)(y - m_size * 0.5f + pmap->getoffset());
 
 	// 移動量に基づいてキャラクタの座標を移動
@@ -441,7 +440,8 @@ int Player::mapHitCheck(float X, float Y, float& MoveX, float& MoveY)
 		// ここに来たら適当な値を返す
 		return 4;
 	}
-	// 当たり判定のあるブロックに当たっているかチェック
+
+	/*------クリアの時(3に当たった時)フラグを返す------*/
 	if (pmap->GetChipParam(afterX, afterY) == 10 || pmap->GetChipParam(afterX, afterY) == 3)
 	{
 		float blockLeftX, blockTopY, blockRightX, blockBottomY;
@@ -457,7 +457,7 @@ int Player::mapHitCheck(float X, float Y, float& MoveX, float& MoveY)
 		// 上辺に当たっていた場合
 		if (MoveY > 0.0f)
 		{
-			clearFlag = true;
+			clearFlag = true;	//クリアにする
 		}
 
 		// 下辺に当たっていた場合

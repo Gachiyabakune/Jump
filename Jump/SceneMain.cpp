@@ -33,6 +33,7 @@ SceneBase* SceneMain::update()
 	player->updata();
 	map->updata();
 	
+	//ƒNƒŠƒA”»’è
 	if (player->gameClear())
 	{
 		return(new SceneResult);

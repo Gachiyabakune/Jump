@@ -18,6 +18,7 @@ public:
 	virtual void draw()override;
 
 private:
+	bool m_isStart;
 	bool m_isEnd;
 	int m_interval;
 };

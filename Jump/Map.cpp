@@ -217,8 +217,8 @@ namespace
 			{2, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 2},
 			{2, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 2},
 
-			{2, 5, 5, 5, 5,   5, 5, 5, 5, 5,   2, 2, 2, 2, 5,   5, 5, 5, 5, 5,   5, 5, 5, 2},
-			{2, 2, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 2, 2},
+			{2, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 2},
+			{2, 2, 5, 5, 5,   5, 5, 5, 5, 5,   2, 2, 2, 2, 5,   5, 5, 5, 5, 5,   5, 5, 2, 2},
 			{2, 2, 2, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 2, 2, 2},
 			{2, 2, 2, 2, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   2, 2, 2, 2},
 			{2, 2, 2, 2, 2,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 2,   2, 2, 2, 2},
@@ -251,13 +251,7 @@ void Map::init()
 		MapChipX, MapChipY,
 		MapSize, MapSize,
 		Mchip);
-	//マップ
-	/*LoadDivGraph("data/chip.png",
-		90,
-		10, 9,
-		MapSize, MapSize,
-		Mchip);*/
-
+	
 	skyH = LoadGraph("data/sora.png");
 	cloudH = LoadGraph("data/cloud.png");
 	cloudH2 = LoadGraph("data/kumo.png");
@@ -399,11 +393,7 @@ void Map::updata()
 	case 10:	//ステージ5
 		offset = -Game::kScreenHight * (MapStage - 10);
 		mapChangeInterval++;
-		/*if (typeA)
-		{
-			nowStage = 11;
-			mapChangeInterval = 0;
-		}*/
+
 		if (typeB)
 		{
 			nowStage = 9;
@@ -426,16 +416,12 @@ void Map::draw()
 		{
 			int posX = x * MapSize;
 			int posY = y * MapSize + offset;
-			//１は当たり判定チップを表しているので１のところだけ描画
-			if (MapData[y][x] == 10)
-			{
-				DrawGraph(posX, posY, Mchip[10], FALSE);
-			}
-			else if (MapData[y][x] == 2)
+			//2は当たり判定チップを表しているので2のところだけ描画
+			if (MapData[y][x] == 2)
 			{
 				DrawGraph(posX, posY, Mchip[17], FALSE);
-				//DrawFormatString(posX, posY, GetColor(255, 255, 255), "10\n壁");
 			}
+			//3はゴール
 			else if (MapData[y][x] == 3)
 			{
 				DrawGraph(posX, posY, Mchip[9], FALSE);

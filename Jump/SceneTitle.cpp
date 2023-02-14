@@ -74,8 +74,8 @@ SceneBase* SceneTitle::update()
 void SceneTitle::draw()
 {
 	int y = 0;
-	DrawString(200, 150, "メニュー画面です。", GetColor(255, 255, 255));
-	DrawString(200, 170, "上下キーを押し、エンターを押して下さい。", GetColor(255, 255, 255));
+	DrawString(200, 150, "", GetColor(255, 255, 255));
+	DrawString(200, 170, "上下キーで選択し、2ボタンを押して下さい。", GetColor(255, 255, 255));
 	DrawString(Game::kScreenWidth / 2 - 40, Game::kScreenHight / 2 - 30,
 		"ゲーム", GetColor(255, 255, 255));
 	DrawString(Game::kScreenWidth / 2 - 40, Game::kScreenHight / 2,
