@@ -9,7 +9,7 @@ namespace
 namespace
 {
 	constexpr float Gravity = 0.3f;			//重力
-	constexpr float JumpPowerLvMax = 25.0f;	//最大ジャンプ力
+	constexpr float JumpPowerLvMax = 12.0f;	//最大ジャンプ力
 	constexpr float JumpPowerLv5 = 12.0f;	//Lv5
 	constexpr float JumpPowerLv4 = 10.0f;		//Lv4
 	constexpr float JumpPowerLv3 = 8.0f;	//Lv3

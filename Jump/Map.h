@@ -39,5 +39,6 @@ private:
 	int skyH;
 	int cloudH;
 	int cloudH2;
+	float cloudX, cloudY;
 };
 

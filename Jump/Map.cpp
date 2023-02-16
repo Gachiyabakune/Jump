@@ -127,7 +127,7 @@ namespace
 			{2, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 2},
 			{2, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 2},
 			{2, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 2},
-			{2, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 3, 5,   5, 5, 5, 5, 5,   5, 5, 5, 2},
+			{2, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 2},
 
 			{2, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 2, 2, 2,   5, 5, 5, 5, 5,   5, 5, 5, 2},
 			{2, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 2, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 2},
@@ -219,7 +219,7 @@ namespace
 
 			{2, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 2},
 			{2, 2, 5, 5, 5,   5, 5, 5, 5, 5,   2, 2, 2, 2, 5,   5, 5, 5, 5, 5,   5, 5, 2, 2},
-			{2, 2, 2, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 2, 2, 2},
+			{2, 2, 2, 5, 5,   5, 5, 5, 5, 5,   5, 5, 3, 5, 5,   5, 5, 5, 5, 5,   5, 2, 2, 2},
 			{2, 2, 2, 2, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   2, 2, 2, 2},
 			{2, 2, 2, 2, 2,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 2,   2, 2, 2, 2},
 
@@ -230,11 +230,14 @@ namespace
 			{2, 2, 2, 2, 2,   2, 2, 2, 2, 2,   2, 2, 2, 2, 2,   2, 2, 2, 2 ,2,   2, 2, 2, 2},
 	};
 
+	constexpr float kScrollSpeed = 0.5f;
 }
 Map::Map() : 
 	offset(0),
 	mapChangeInterval(0),
 	nowStage(0),
+	cloudX(0),
+	cloudY(0),
 	pPlayer(nullptr)
 {
 }
@@ -254,11 +257,17 @@ void Map::init()
 	
 	skyH = LoadGraph("data/sora.png");
 	cloudH = LoadGraph("data/cloud.png");
-	cloudH2 = LoadGraph("data/kumo.png");
+	cloudH2 = LoadGraph("data/kumoscroll.png");
 }
 
 void Map::updata()
 {
+	/*â_Ç™ÉXÉNÉçÅ[ÉãÇ∑ÇÈèàóù*/
+	cloudX -= kScrollSpeed;
+	if (cloudX < -Game::kScreenWidth)
+	{
+		cloudX = 0;
+	}
 	//â∫âÊñ Ç©ÇÁè„âÊñ 
 	bool typeA = pPlayer->getPos() < 0 - MapSize && mapChangeInterval >= 60;
 	//è„âÊñ Ç©ÇÁâ∫âÊñ 
@@ -408,8 +417,8 @@ void Map::updata()
 void Map::draw()
 {
 	DrawGraph(0, 0, skyH, false);
-	DrawGraph(0, 0, cloudH2, true);
-	//DrawGraph(0, 480, cloudH, true);
+	DrawGraph(cloudX, cloudY, cloudH2, true);
+	//printfDx("%f\n",cloudX);
 	for (int y = 0; y < NUM_MAP_Y; y++)
 	{
 		for (int x = 0; x < NUM_MAP_X; x++)

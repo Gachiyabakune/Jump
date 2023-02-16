@@ -23,7 +23,7 @@ Player::~Player()
 void Player::init()
 {
 	//キャラのサイズ
-	m_size = 32;
+	m_size = 30;
 
 	// プレイヤーの座標を初期化
 	x = 768 - 32 * 12;
@@ -52,13 +52,13 @@ void Player::updata()
 	//-----左右の移動を見る-----
 	
 	//左を押している時かつジャンプ中でもない時
-	if ((Pad::isPress(PAD_INPUT_LEFT) && !moveFlag )/*|| directionJump==1*/)
+	if ((Pad::isPress(PAD_INPUT_LEFT) && !moveFlag ))
 	{
 		MoveX -= MoveSpeed;
 	}
 
 	//右を押している時かつジャンプ中でもない時
-	if ((Pad::isPress(PAD_INPUT_RIGHT) && !moveFlag )/*|| directionJump== 2*/)
+	if ((Pad::isPress(PAD_INPUT_RIGHT) && !moveFlag ))
 	{
 		MoveX += MoveSpeed;
 	}
@@ -196,7 +196,7 @@ void Player::updata()
 		}
 	}
 	//飛んでいないときに必要な情報を初期化する
-	if (!jumpFlag && jumpAfterInterval == false)
+	if (!jumpFlag && !jumpAfterInterval)
 	{
 		moveFlag = false;
 		directionJump = 0;
@@ -270,6 +270,10 @@ void Player::draw()
 		DrawString(0, 40, "真上", GetColor(255, 255, 255));	//真上に飛ぶ
 	}
 	DrawFormatString(0, 60, GetColor(255, 255, 255), "%d", jumpPower);	//ジャンプパワー
+
+	SetFontSize(32);
+	DrawString(0, 80, "Aボタンで溜め、溜めている間に十字キーで\n飛ぶ方向を決定\nため段階でジャンプ力変化", GetColor(255, 255, 255));	//真上に飛ぶ
+	SetFontSize(16);
 #endif
 }
 

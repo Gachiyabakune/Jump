@@ -6,7 +6,7 @@ class SceneTitle : public SceneBase
 public:
 	SceneTitle()
 	{
-		m_isEnd = false;
+		m_boolerval = 0;
 	}
 	virtual ~SceneTitle() {}
 
@@ -18,7 +18,9 @@ public:
 	virtual void draw()override;
 
 private:
-	bool m_isStart;
-	bool m_isEnd;
-	int m_interval;
+	bool m_boolerval;
+	bool select1 = false;
+	bool select2 = false;
+	bool select3 = false;
+	bool select4 = false;
 };

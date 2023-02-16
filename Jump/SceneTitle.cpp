@@ -1,23 +1,31 @@
-#include "SceneTitle.h"
+ï»¿#include "SceneTitle.h"
 #include "DxLib.h"
 #include "SceneMain.h"
+#include "SceneTutorial.h"
+#include "SceneOpening.h"
 #include "Pad.h"
 #include "game.h"
 
 typedef enum 
 {
-	eMenu_Game,         //ƒQ[ƒ€
-	eMenu_Config,       //İ’è
-	eMenu_End,			//I—¹
-	eMenu_Num,        //–{€–Ú‚Ì”
+	eMenu_Game,         //ã‚²ãƒ¼ãƒ 
+	eMenu_Tutorial,		//ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«
+	eMenu_Config,       //è¨­å®š
+	eMenu_End,			//çµ‚äº†
+	eMenu_Num,        //æœ¬é …ç›®ã®æ•°
 } eMenu;
 
-static int NowSelect = eMenu_Game;    //Œ»İ‚Ì‘I‘ğó‘Ô(‰Šú‚ÍƒQ[ƒ€‘I‘ğ’†)
+static int NowSelect = eMenu_Game;    //ç¾åœ¨ã®é¸æŠçŠ¶æ…‹(åˆæœŸã¯ã‚²ãƒ¼ãƒ é¸æŠä¸­)
+
+namespace
+{
+	// æ–‡å­—è‰²
+	const int kFontColor = GetColor(125, 125, 125);
+	const int kFontSelectColor = GetColor(255, 255, 255);
+}
 
 void SceneTitle::init()
 {
-	m_isEnd = false;
-	m_interval = 0;
 }
 
 SceneBase* SceneTitle::update()
@@ -28,44 +36,40 @@ SceneBase* SceneTitle::update()
 		{
 		case eMenu_Game:
 			return (new SceneMain);
+		case eMenu_Tutorial:
+			return (new SceneTutorial);
+			break;
 		case eMenu_End:
 			DxLib_End();
-			printfDx("aaa");
+			break;
 		case eMenu_Config:
 		
 			SetDrawBlendMode(DX_BLENDMODE_MULA, 196);
 
-			//ƒ|[ƒYƒEƒBƒ“ƒhƒEƒZƒƒtƒ@ƒ“(•‚¢)
+			//ãƒãƒ¼ã‚ºã‚¦ã‚£ãƒ³ãƒ‰ã‚¦ã‚»ãƒ­ãƒ•ã‚¡ãƒ³(é»’ã„)
 			DrawBox(40, 40, 600, 440, GetColor(0,255,0), true);
 
-			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);	//’Êí•`‰æ‚É–ß‚·
+			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);	//é€šå¸¸æç”»ã«æˆ»ã™
 
-			//ƒ|[ƒY’†ƒƒbƒZ[ƒW
+			//ãƒãƒ¼ã‚ºä¸­ãƒ¡ãƒƒã‚»ãƒ¼ã‚¸
 			DrawString(40 + 10, 40 + 10, "Pausing...", 0xffff88);
 
-			//ƒ|[ƒYƒEƒBƒ“ƒhƒE˜gü
+			//ãƒãƒ¼ã‚ºã‚¦ã‚£ãƒ³ãƒ‰ã‚¦æ ç·š
 			DrawBox(40, 40, 600, 440, GetColor(0, 255, 255), false);
 		default:
 			break;
 		}
 		
 	}
-	//ã
-	if (Pad::isTrigger(PAD_INPUT_UP)&& m_interval == 0)
+	//ä¸Š
+	if (Pad::isTrigger(PAD_INPUT_UP))
 	{
-		NowSelect = (NowSelect + (eMenu_Num - 1)) % eMenu_Num;//‘I‘ğó‘Ô‚ğˆê‚Âã‚°‚é
-		m_interval = 10;
+		NowSelect = (NowSelect + (eMenu_Num - 1)) % eMenu_Num;//é¸æŠçŠ¶æ…‹ã‚’ä¸€ã¤ä¸Šã’ã‚‹
 	}
-	//‰º
-	if (Pad::isTrigger(PAD_INPUT_DOWN)&& m_interval == 0)
+	//ä¸‹
+	if (Pad::isTrigger(PAD_INPUT_DOWN))
 	{
-		NowSelect = (NowSelect + 1) % eMenu_Num;//‘I‘ğó‘Ô‚ğˆê‚Â‰º‚°‚é
-		m_interval = 10;
-	}
-	//ƒCƒ“ƒ^[ƒoƒ‹
-	if (m_interval != 0)
-	{
-		m_interval--;
+		NowSelect = (NowSelect + 1) % eMenu_Num;//é¸æŠçŠ¶æ…‹ã‚’ä¸€ã¤ä¸‹ã’ã‚‹
 	}
 	
 	return this;
@@ -75,26 +79,80 @@ void SceneTitle::draw()
 {
 	int y = 0;
 	DrawString(200, 150, "", GetColor(255, 255, 255));
-	DrawString(200, 170, "ã‰ºƒL[‚Å‘I‘ğ‚µA2ƒ{ƒ^ƒ“‚ğ‰Ÿ‚µ‚Ä‰º‚³‚¢B", GetColor(255, 255, 255));
-	DrawString(Game::kScreenWidth / 2 - 40, Game::kScreenHight / 2 - 30,
-		"ƒQ[ƒ€", GetColor(255, 255, 255));
-	DrawString(Game::kScreenWidth / 2 - 40, Game::kScreenHight / 2,
-		"ƒIƒvƒVƒ‡ƒ“", GetColor(255, 255, 255));
-	DrawString(Game::kScreenWidth / 2 - 40, Game::kScreenHight / 2 + 30,
-		"I—¹", GetColor(255, 255, 255));
+	DrawString(200, 170, "ä¸Šä¸‹ã‚­ãƒ¼ã§é¸æŠã—ã€2ãƒœã‚¿ãƒ³ã‚’æŠ¼ã—ã¦ä¸‹ã•ã„ã€‚", GetColor(255, 255, 255));
+	if (select1)
+	{
+		DrawString(Game::kScreenWidth / 2 - 25, Game::kScreenHight / 2 - 30,
+			"ã‚²ãƒ¼ãƒ ", kFontSelectColor);
+	}
+	else
+	{
+		DrawString(Game::kScreenWidth / 2 - 40, Game::kScreenHight / 2 - 30,
+			"ã‚²ãƒ¼ãƒ ", kFontColor);
+	}
+	if (select2)
+	{
+		DrawString(Game::kScreenWidth / 2 - 25, Game::kScreenHight / 2,
+			"ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«", kFontSelectColor);
+	}
+	else
+	{
+		DrawString(Game::kScreenWidth / 2 - 40, Game::kScreenHight / 2,
+			"ãƒãƒ¥ãƒ¼ãƒˆãƒªã‚¢ãƒ«", kFontColor);
+	}
+	if (select3)
+	{
+		DrawString(Game::kScreenWidth / 2 - 25, Game::kScreenHight / 2 + 30,
+			"ã‚ªãƒ—ã‚·ãƒ§ãƒ³", kFontSelectColor);
+	}
+	else
+	{
+		DrawString(Game::kScreenWidth / 2 - 40, Game::kScreenHight / 2 + 30,
+			"ã‚ªãƒ—ã‚·ãƒ§ãƒ³", kFontColor);
+	}
+	if (select4)
+	{
+		DrawString(Game::kScreenWidth / 2 - 25, Game::kScreenHight / 2 + 60,
+			"çµ‚äº†", kFontSelectColor);
+	}
+	else
+	{
+		DrawString(Game::kScreenWidth / 2 - 40, Game::kScreenHight / 2 + 60,
+			"çµ‚äº†", kFontColor);
+	}
+
+	//é¸ã‚“ã é …ç›®ã«ã‚ˆã£ã¦åº§æ¨™ã‚„è‰²ãªã©ã‚’å¤‰ãˆã¦ã„ã‚‹ã®ã§ã‚³ãƒ¼ãƒ‰ãŒé•·ããªã‚‹
 	switch (NowSelect)
-	{//Œ»İ‚Ì‘I‘ğó‘Ô‚É]‚Á‚Äˆ—‚ğ•ªŠò
-	case eMenu_Game://ƒQ[ƒ€‘I‘ğ’†‚È‚ç
-		y = 258;    //ƒQ[ƒ€‚ÌÀ•W‚ğŠi”[
+	{//ç¾åœ¨ã®é¸æŠçŠ¶æ…‹ã«å¾“ã£ã¦å‡¦ç†ã‚’åˆ†å²
+	case eMenu_Game://ã‚²ãƒ¼ãƒ é¸æŠä¸­ãªã‚‰
+		y = 258;    //ã‚²ãƒ¼ãƒ ã®åº§æ¨™ã‚’æ ¼ç´
+		select1 = true;
+		select2 = false;
+		select3 = false;
+		select4 = false;
+		break;
+	case eMenu_Tutorial:
+		y = 288;
+		select2 = true;
+		select1 = false;
+		select3 = false;
+		select4 = false;
 		break;
 	case eMenu_Config:
-		y = 288;
-		break;
-	case eMenu_End://İ’è‘I‘ğ’†‚È‚ç
 		y = 318;
-		//İ’è‚ÌÀ•W‚ğŠi”[
+		select3 = true;
+		select1 = false;
+		select2 = false;
+		select4 = false;
+		break;
+	case eMenu_End:
+		y = 348;
+		select4 = true;
+		select2 = false;
+		select3 = false;
+		select1 = false;
 		break;
 	}
 
-	DrawString(Game::kScreenWidth / 2 - 70, y, "¡", GetColor(255, 0, 255));
+	DrawString(Game::kScreenWidth / 2 - 70, y, "â–¡", GetColor(255, 0, 255));
 }
