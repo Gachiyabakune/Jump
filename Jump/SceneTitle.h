@@ -4,10 +4,7 @@
 class SceneTitle : public SceneBase
 {
 public:
-	SceneTitle()
-	{
-		m_boolerval = 0;
-	}
+	SceneTitle(){}
 	virtual ~SceneTitle() {}
 
 
@@ -18,7 +15,6 @@ public:
 	virtual void draw()override;
 
 private:
-	bool m_boolerval;
 	bool select1 = false;
 	bool select2 = false;
 	bool select3 = false;

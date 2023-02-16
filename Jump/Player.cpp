@@ -2,6 +2,7 @@
 #include "game.h"
 #include "Pad.h"
 #include "Map.h"
+#include "Sound.h"
 #include <DxLib.h>
 
 Player::Player() : 
@@ -193,11 +194,14 @@ void Player::updata()
 			jumpFlag = true;				//ジャンプ中にフラグを変更
 			jumpAfterInterval = false;		//ジャンプ後のインターバル
 			jumpPower = 0;					//ジャンプパワーを元に戻す
+
+			Sound::play(Sound::SoundId_Jump);
 		}
 	}
 	//飛んでいないときに必要な情報を初期化する
 	if (!jumpFlag && !jumpAfterInterval)
 	{
+		//Sound::play(Sound::SoundId_fall);
 		moveFlag = false;
 		directionJump = 0;
 		direction = 0;

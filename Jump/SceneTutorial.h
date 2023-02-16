@@ -4,7 +4,7 @@ class SceneTutorial : public SceneBase
 {
 public:
 	SceneTutorial() {}
-	virtual ~SceneTutorial() {}
+	virtual ~SceneTutorial() {};
 
 
 	virtual void init() override;

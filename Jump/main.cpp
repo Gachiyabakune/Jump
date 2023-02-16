@@ -1,6 +1,7 @@
 #include "DxLib.h"
 #include "Pad.h"
 #include "game.h"
+#include "Sound.h"
 #include "SceneManager.h"
 
 
@@ -26,6 +27,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	// 画像のロード
 	scene.init();
+	// サウンド読み込み
+	Sound::load();
 
 	while (ProcessMessage() == 0)
 	{
@@ -53,6 +56,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	// 画像のアンロード
 	scene.end();
 
+	//サウンドのアンロード
+	Sound::unload();
 	DxLib_End();				// ＤＸライブラリ使用の終了処理
 
 	return 0;				// ソフトの終了 

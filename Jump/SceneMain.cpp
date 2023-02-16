@@ -6,11 +6,7 @@
 #include "game.h"
 
 
-SceneMain::SceneMain():
-	temp(0),
-	tempNum(0),
-	moveNum(0),
-	idel(false)
+SceneMain::SceneMain()
 {
 }
 

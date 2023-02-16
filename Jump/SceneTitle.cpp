@@ -3,6 +3,7 @@
 #include "SceneMain.h"
 #include "SceneTutorial.h"
 #include "SceneOpening.h"
+#include "Sound.h"
 #include "Pad.h"
 #include "game.h"
 
@@ -65,11 +66,13 @@ SceneBase* SceneTitle::update()
 	if (Pad::isTrigger(PAD_INPUT_UP))
 	{
 		NowSelect = (NowSelect + (eMenu_Num - 1)) % eMenu_Num;//選択状態を一つ上げる
+		Sound::play(Sound::SoundId_Select);
 	}
 	//下
 	if (Pad::isTrigger(PAD_INPUT_DOWN))
 	{
 		NowSelect = (NowSelect + 1) % eMenu_Num;//選択状態を一つ下げる
+		Sound::play(Sound::SoundId_Select);
 	}
 	
 	return this;
@@ -154,5 +157,5 @@ void SceneTitle::draw()
 		break;
 	}
 
-	DrawString(Game::kScreenWidth / 2 - 70, y, "□", GetColor(255, 0, 255));
+	DrawString(Game::kScreenWidth / 2 - 70, y, "→", GetColor(255, 0, 255));
 }

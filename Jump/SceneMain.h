@@ -19,11 +19,6 @@ public:
 
 private:
 	
-	int temp;
-	int tempNum;
-	int moveNum;
-	bool idel;
-	
 	Player* player = new Player;
 	Map* map = new Map;
 };

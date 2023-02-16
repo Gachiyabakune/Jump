@@ -10,7 +10,7 @@ void SceneTutorial::init()
 
 SceneBase* SceneTutorial::update()
 {
-	if (Pad::isTrigger(PAD_INPUT_1))
+	if (Pad::isTrigger(PAD_INPUT_4))
 	{
 		return (new SceneTitle);
 	}
