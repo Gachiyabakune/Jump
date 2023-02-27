@@ -2,8 +2,8 @@
 
 namespace
 {
-	constexpr int CharChipX = 9;  // 横9種類
-	constexpr int CharChipY = 5;   // 縦5種類
+	constexpr int CharChipX = 12;  // 横9種類
+	constexpr int CharChipY = 10;   // 縦5種類
 	constexpr int CharChipAll = CharChipX * CharChipY; // 合計45個
 }
 namespace
@@ -38,6 +38,8 @@ public:
 	void updata();
 	void draw();
 
+	void jump(float MoveX, float MoveY);
+	void cAnimation(bool walk);
 	//ステージの情報
 	void setStage(Map* map) { pmap = map; }
 	int gameClear() { return clearFlag; }
@@ -53,17 +55,23 @@ private:
 	float x, y;		// プレイヤーの座標(中心座標)
 	float fallSpeed;	// プレイヤーの落下速度
 	bool jumpFlag;	// プレイヤーがジャンプ中か、のフラグ
+	bool revers;	//画像を反転させるか
 	int	m_size;	// 画像のサイズ（縦横同じ）
 	int Cchip[CharChipAll];
 	int jumpPower;	//ジャンプパワー
 	int lineY;		//Y座標
 
-	bool moveFlag;	//ジャンプ中に動けなくするフラグ
 	int directionJump = 0;	//ジャンプ方向
 	int direction = 0;		//どの方向に飛ぶかを決める
+	int chipNum = 0;		//キャラクターのアニメーションs
+	int IdelInterval = 0;	//idelインターバル	
+	
+	bool idel = true;
+	bool moveFlag;	//ジャンプ中に動けなくするフラグ
 	bool jumpAfterInterval;	//ジャンプ後のインターバル 
 	bool clearFlag = false;
 
 	bool boundFlag;			//壁に当たり反射したか
+
 };
 

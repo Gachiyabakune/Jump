@@ -219,7 +219,7 @@ namespace
 
 			{2, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 2},
 			{2, 2, 5, 5, 5,   5, 5, 5, 5, 5,   2, 2, 2, 2, 5,   5, 5, 5, 5, 5,   5, 5, 2, 2},
-			{2, 2, 2, 5, 5,   5, 5, 5, 5, 5,   5, 5, 3, 5, 5,   5, 5, 5, 5, 5,   5, 2, 2, 2},
+			{2, 2, 2, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 2, 2, 2},
 			{2, 2, 2, 2, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   2, 2, 2, 2},
 			{2, 2, 2, 2, 2,   5, 5, 5, 5, 5,   5, 5, 5, 5, 5,   5, 5, 5, 5, 2,   2, 2, 2, 2},
 
@@ -425,18 +425,18 @@ void Map::draw()
 		{
 			int posX = x * MapSize;
 			int posY = y * MapSize + offset;
-			int idx = MapData[y][x];
-			DrawGraph(posX, posY, Mchip[idx], FALSE);
-			////2は当たり判定チップを表しているので2のところだけ描画
-			//if (MapData[y][x] == 2)
-			//{
-			//	DrawGraph(posX, posY, Mchip[17], FALSE);
-			//}
-			////3はゴール
-			//else if (MapData[y][x] == 3)
-			//{
-			//	DrawGraph(posX, posY, Mchip[9], FALSE);
-			//}
+			/*int idx = MapData[y][x];
+			DrawGraph(posX, posY, Mchip[idx], FALSE);*/
+			//2は当たり判定チップを表しているので2のところだけ描画
+			if (MapData[y][x] == 2)
+			{
+				DrawGraph(posX, posY, Mchip[17], FALSE);
+			}
+			//3はゴール
+			else if (MapData[y][x] == 3)
+			{
+				DrawGraph(posX, posY, Mchip[9], FALSE);
+			}
 		}
 	}
 }

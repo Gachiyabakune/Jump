@@ -44,11 +44,16 @@ SceneBase* SceneOpening::update()
         m_textBlinkFrame = 0;
     }
 
-    //AかBボタン
-    if (Pad::isTrigger(PAD_INPUT_1) || Pad::isTrigger(PAD_INPUT_2))
+    int Pad;        //ジョイパッドの入力状態格納用変数
+    //好きなボタン
+    Pad = GetJoypadInputState(DX_INPUT_KEY_PAD1);        //入力状態をPadに格納
+    for (int i = 0; i < 28; i++)
     {
-        Sound::play(Sound::SoundId_Decision);
-        return (new SceneTitle);
+        if (Pad & (1 << i))
+        {
+            Sound::play(Sound::SoundId_Decision);
+            return (new SceneTitle);
+        }
     }
     //if (!isFading())
     //{
@@ -88,8 +93,8 @@ void SceneOpening::draw()
     //テキスト点滅
     if (m_textBlinkFrame < kTextDispFrame)
     {
-        DrawString((Game::kScreenWidth / 2) - 60,
+        DrawString((Game::kScreenWidth / 2) - 80,
             (Game::kScreenHight / 2) + 120,
-            "press A or B", kFontColor, false);
+            "Press the button", kFontColor, false);
     }
 }

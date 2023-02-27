@@ -3,6 +3,7 @@
 #include "SceneResult.h"
 #include "DxLib.h"
 #include "Pad.h"
+#include "Sound.h"
 #include "game.h"
 
 
@@ -29,11 +30,18 @@ SceneBase* SceneMain::update()
 	player->updata();
 	map->updata();
 	
+	static int volume, count = 0;
+	volume = count * 4;
+	if (count > 63) count = 63;
+	count++;
+	Sound::startBgm(Sound::SoundId_BgmMain,volume);
+
 	//ƒNƒŠƒA”»’è
 	if (player->gameClear())
 	{
 		return(new SceneResult);
 	}
+
 	return this;
 }
 

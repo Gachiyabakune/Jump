@@ -11,6 +11,7 @@ namespace
 	const char* const kFileName[Sound::SoundId_Num] =
 	{
 		// BGM
+		"Sound/BGM.mp3",
 		// Œø‰Ê‰¹
 		"Sound/jump.mp3",
 		"Sound/fall.mp3",

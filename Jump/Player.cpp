@@ -13,6 +13,7 @@ Player::Player() :
 	jumpAfterInterval(true),
 	boundFlag(false),
 	jumpFlag(false),
+	revers(false),
 	jumpPower(0)
 {
 }
@@ -25,19 +26,18 @@ void Player::init()
 {
 	//キャラのサイズ
 	m_size = 30;
-
 	// プレイヤーの座標を初期化
-	x = 768 - 32 * 12;
+	x = Game::kScreenWidth - MapSize * 12;
 	y = Game::kScreenHight * MapStage - MapSize;
 
 	// プレイヤーの落下速度を初期化
 	fallSpeed = 0.0f;
 
 	//キャラクター
-	LoadDivGraph("data/char.png",
+	LoadDivGraph("data/texture.png",
 		CharChipAll,
 		CharChipX, CharChipY,
-		MapSize, MapSize,
+		48, 48,
 		Cchip);
 }
 
@@ -52,28 +52,38 @@ void Player::updata()
 
 	//-----左右の移動を見る-----
 	
+	bool walk = false;
 	//左を押している時かつジャンプ中でもない時
 	if ((Pad::isPress(PAD_INPUT_LEFT) && !moveFlag ))
 	{
+		//動いでいるのでidel状態にはしない
+		idel = false;
 		MoveX -= MoveSpeed;
+		revers = false;
+		walk = true;
 	}
 
 	//右を押している時かつジャンプ中でもない時
 	if ((Pad::isPress(PAD_INPUT_RIGHT) && !moveFlag ))
 	{
+		//動いでいるのでidel状態にはしない
+		idel = false;
 		MoveX += MoveSpeed;
+		revers = true;
+		walk = true;
 	}
-
 	//ジャンプ方向で左が選択された場合
 	if (directionJump == 1)
 	{
-		if (!boundFlag)	
+		if (!boundFlag)
 		{
 			MoveX -= MoveSpeed;	//バウンドしない間は左方向に
+			revers = false;
 		}
-		else	
+		else
 		{
 			MoveX += MoveSpeed;	//バウンドすると逆方向に
+			revers = true;
 		}
 	}
 	//ジャンプ方向で右が選択された場合
@@ -82,20 +92,106 @@ void Player::updata()
 		if (!boundFlag)
 		{
 			MoveX += MoveSpeed;	//バウンドしない間は右方向に
+			revers = true;
 		}
 		else
 		{
 			MoveX -= MoveSpeed;	//バウンドすると逆方向に
+			revers = false;
 		}
 	}
 
+	//ジャンプ処理
+	jump(MoveX, MoveY);
+	//キャラクターのアニメーション
+	cAnimation(walk);
+
+	//デバック用
+#ifdef _DEBUG
+	if (Pad::isPress(PAD_INPUT_4))
+	{
+		y -= 10;
+	}
+	else
+	{
+		// 重力
+		fallSpeed += Gravity;
+	}
+#else
+	// 重力
+	fallSpeed += Gravity;
+#endif
+	// 落下速度を移動量に加える
+	MoveY = fallSpeed;
+
+	//lineYにY座標のoffset込みの数値を代入
+	lineY = (int)(y - m_size * 0.5f + pmap->getoffset());
+
+	// 移動量に基づいてキャラクタの座標を移動
+	movePlayer(MoveX, MoveY);
+}
+
+void Player::draw()
+{
+	//キャラクター描画
+	//入力した方向でキャラが向いている方向を変える
+	if (revers)
+	{
+		DrawGraph((int)(x - 48 * 0.5f),
+			(int)(y - 48 * 0.5f + pmap->getoffset()),
+			Cchip[chipNum], TRUE);
+	}
+	else
+	{
+		DrawTurnGraph((int)(x - 48 * 0.5f),
+			(int)(y - 48 * 0.5f + pmap->getoffset()),
+			Cchip[chipNum], TRUE);
+	}
+#ifdef _DEBUG
+	//四角 飛べるときは赤色,飛べない時は黄色
+	if (!jumpFlag)
+	{
+		DrawBox((int)(x - m_size * 0.5f),
+			(int)(y - m_size * 0.5f + pmap->getoffset()),
+			(int)(x - m_size * 0.5f) + m_size,
+			(int)(y - m_size * 0.5f + pmap->getoffset()) + m_size,
+			GetColor(255, 0, 0), false);
+	}
+	else
+	{
+
+		DrawBox((int)(x - m_size * 0.5f),
+			(int)(y - m_size * 0.5f + pmap->getoffset()),
+			(int)(x - m_size * 0.5f) + MapSize,
+			(int)(y - m_size * 0.5f + pmap->getoffset()) + MapSize,
+			GetColor(255, 255, 0), false);
+	}
+
+	DrawFormatString(0, 0, GetColor(255, 255, 255), "%d", lineY);	//Y座標	
+	DrawFormatString(0, 20, GetColor(255, 255, 255), "%d", (int)(x - m_size * 0.5f));	//X座標
+	DrawFormatString(0, 40, GetColor(255, 255, 255), "dir : %d", direction);	//Y座標	
+	DrawFormatString(0, 60, GetColor(255, 255, 255), "dirJ : %d", directionJump);	//Y座標	
+	
+	DrawFormatString(0, 80, GetColor(255, 255, 255), " Jpower : %d", jumpPower);	//ジャンプパワー
+	DrawFormatString(0, 200, GetColor(255, 255, 255), "%d", chipNum);	//
+
+	SetFontSize(32);
+	//DrawString(0, 80, "Aボタンで溜め、溜めている間に十字キーで\n飛ぶ方向を決定\nため段階でジャンプ力変化", GetColor(255, 255, 255));	//真上に飛ぶ
+	SetFontSize(16);
+#endif
+}
+
+void Player::jump(float MoveX, float MoveY)
+{
 	// 地に足が着いている場合のみジャンプボタン(ボタン１ or Ｚキー)を見る
 	if (!jumpFlag)
 	{
 		if (Pad::isPress(PAD_INPUT_1))
 		{
 			//ためている間は動けなくする
-			moveFlag = true;	
+			moveFlag = true;
+			//動いでいるのでidel状態にはしない
+			idel = false;
 			//ジャンプパワーチャージ
 			jumpPower++;
 
@@ -103,10 +199,12 @@ void Player::updata()
 			if (Pad::isTrigger(PAD_INPUT_LEFT))
 			{
 				direction = 1;	//左に飛ぶなら1
+				revers = false;
 			}
 			if (Pad::isTrigger(PAD_INPUT_RIGHT))
 			{
 				direction = 2;	//右に飛ぶなら2
+				revers = true;
 			}
 		}
 		//カウントがたまると強制ジャンプ
@@ -150,7 +248,7 @@ void Player::updata()
 				{
 					directionJump = 2;
 				}
-			}
+				}
 			//レベル4ジャンプ
 			else if (ChargeTimeLv4 >= jumpPower && jumpPower >= ChargeTimeLv3)
 			{
@@ -196,8 +294,8 @@ void Player::updata()
 			jumpPower = 0;					//ジャンプパワーを元に戻す
 
 			Sound::play(Sound::SoundId_Jump);
+			}
 		}
-	}
 	//飛んでいないときに必要な情報を初期化する
 	if (!jumpFlag && !jumpAfterInterval)
 	{
@@ -208,77 +306,37 @@ void Player::updata()
 		jumpAfterInterval = true;
 		boundFlag = false;
 	}
-
-	//デバック用
-#ifdef _DEBUG
-	if (Pad::isPress(PAD_INPUT_4))
-	{
-		y -= 10;
-	}
-	else
-	{
-		// 重力
-		fallSpeed += Gravity;
-	}
-#else
-	// 重力
-	fallSpeed += Gravity;
-#endif
-	// 落下速度を移動量に加える
-	MoveY = fallSpeed;
-
-	//lineYにY座標のoffset込みの数値を代入
-	lineY = (int)(y - m_size * 0.5f + pmap->getoffset());
-
-	// 移動量に基づいてキャラクタの座標を移動
-	movePlayer(MoveX, MoveY);
 }
 
-void Player::draw()
+void Player::cAnimation(bool walk)
 {
-	//キャラクター描画
-	DrawGraph((int)(x - m_size * 0.5f),
-		(int)(y - m_size * 0.5f + pmap->getoffset()), Cchip[0], TRUE);
-
-	//四角 飛べるときは赤色,飛べない時は黄色
-	if (jumpFlag == false)
+	//idel状体かどうか
+	if (idel)
 	{
-		DrawBox((int)(x - m_size * 0.5f),
-			(int)(y - m_size * 0.5f + pmap->getoffset()),
-			(int)(x - m_size * 0.5f) + MapSize,
-			(int)(y - m_size * 0.5f + pmap->getoffset()) + MapSize,
-			GetColor(255, 0, 0), false);
+		IdelInterval++;
+		if (chipNum > 9)
+		{
+			chipNum = 0;
+		}
+		if (IdelInterval == 10)
+		{
+			chipNum++;
+			IdelInterval = 0;
+		}
 	}
-	else
+	//walkかどうか
+	else if (walk)
 	{
-
-		DrawBox((int)(x - m_size * 0.5f),
-			(int)(y - m_size * 0.5f + pmap->getoffset()),
-			(int)(x - m_size * 0.5f) + MapSize,
-			(int)(y - m_size * 0.5f + pmap->getoffset()) + MapSize,
-			GetColor(255, 255, 0), false);
+		if (chipNum > 79)
+		{
+			chipNum = 72;
+		}
+		if (IdelInterval == 10)
+		{
+			chipNum++;
+			IdelInterval = 0;
+		}
 	}
-#ifdef _DEBUG
-	DrawFormatString(0, 0, GetColor(255, 255, 255), "%d", lineY);	//Y座標	
-	DrawFormatString(0, 20, GetColor(255, 255, 255), "%d", (int)(x - m_size * 0.5f));	//X座標
-	if (direction == 1)
-	{
-		DrawString(0, 40, "左", GetColor(255, 255, 255));	//左方向に飛ぶ
-	}
-	else if (direction == 2)
-	{
-		DrawString(0, 40, "右", GetColor(255, 255, 255));	//右方向に飛ぶ
-	}
-	else
-	{
-		DrawString(0, 40, "真上", GetColor(255, 255, 255));	//真上に飛ぶ
-	}
-	DrawFormatString(0, 60, GetColor(255, 255, 255), "%d", jumpPower);	//ジャンプパワー
-
-	SetFontSize(32);
-	DrawString(0, 80, "Aボタンで溜め、溜めている間に十字キーで\n飛ぶ方向を決定\nため段階でジャンプ力変化", GetColor(255, 255, 255));	//真上に飛ぶ
-	SetFontSize(16);
-#endif
 }
 
 //-----------------------------------------

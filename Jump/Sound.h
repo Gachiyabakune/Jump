@@ -6,7 +6,7 @@ namespace Sound
 	typedef enum SoundId
 	{
 		// BGM
-		//SoundId_BgmMain,	// 選択画面のBGM
+		SoundId_BgmMain,	// 選択画面のBGM
 		//SoundId_BgmClear,	// クリア後のBGM
 
 		// 効果音
