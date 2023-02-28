@@ -3,6 +3,7 @@
 #include "SceneMain.h"
 #include "SceneTutorial.h"
 #include "SceneOpening.h"
+#include "SceneOption.h"
 #include "Sound.h"
 #include "Pad.h"
 #include "game.h"
@@ -44,19 +45,8 @@ SceneBase* SceneTitle::update()
 			DxLib_End();
 			break;
 		case eMenu_Config:
-		
-			SetDrawBlendMode(DX_BLENDMODE_MULA, 196);
-
-			//ポーズウィンドウセロファン(黒い)
-			DrawBox(40, 40, 600, 440, GetColor(0,255,0), true);
-
-			SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);	//通常描画に戻す
-
-			//ポーズ中メッセージ
-			DrawString(40 + 10, 40 + 10, "Pausing...", 0xffff88);
-
-			//ポーズウィンドウ枠線
-			DrawBox(40, 40, 600, 440, GetColor(0, 255, 255), false);
+			/*return (new SceneOption);*/
+			break;
 		default:
 			break;
 		}
@@ -106,12 +96,12 @@ void SceneTitle::draw()
 	if (select3)
 	{
 		DrawString(Game::kScreenWidth / 2 - 25, Game::kScreenHight / 2 + 30,
-			"オプション", kFontSelectColor);
+			"操作方法", kFontSelectColor);
 	}
 	else
 	{
 		DrawString(Game::kScreenWidth / 2 - 40, Game::kScreenHight / 2 + 30,
-			"オプション", kFontColor);
+			"操作方法", kFontColor);
 	}
 	if (select4)
 	{
@@ -157,5 +147,5 @@ void SceneTitle::draw()
 		break;
 	}
 
-	DrawString(Game::kScreenWidth / 2 - 70, y, "→", GetColor(255, 0, 255));
+	DrawString(Game::kScreenWidth / 2 - 70, y, "⇒", GetColor(255, 0, 255));
 }

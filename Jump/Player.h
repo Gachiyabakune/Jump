@@ -66,11 +66,12 @@ private:
 	int chipNum = 0;		//キャラクターのアニメーションs
 	int IdelInterval = 0;	//idelインターバル	
 	
-	bool idel = true;
+	bool idel;
 	bool moveFlag;	//ジャンプ中に動けなくするフラグ
 	bool jumpAfterInterval;	//ジャンプ後のインターバル 
-	bool clearFlag = false;
-
+	bool clearFlag;	//クリアしたかどうか
+	bool charge;	//チャージしているかどうか
+	bool jumpMotion = false;		//ジャンプモーション
 	bool boundFlag;			//壁に当たり反射したか
 
 };

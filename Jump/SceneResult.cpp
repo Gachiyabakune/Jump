@@ -14,7 +14,7 @@ void SceneResult::init()
 
 SceneBase* SceneResult::update()
 {
-	if (Pad::isTrigger(PAD_INPUT_2))
+	if (Pad::isTrigger(PAD_INPUT_1))
 	{
 		return(new SceneTitle);
 	}
@@ -23,7 +23,7 @@ SceneBase* SceneResult::update()
 
 void SceneResult::draw()
 {
-	DrawString(4, 0, "エンド", GetColor(255, 255, 255));
+	DrawString(4, 0, "ゲームクリア", GetColor(255, 255, 255));
 
 	SetFontSize(8);
 	DrawString(600, 550, "BGM：hitoshi by Senses Circuit", GetColor(255, 255, 255), false);

@@ -45,9 +45,9 @@ SceneBase* SceneOpening::update()
     }
 
     int Pad;        //ジョイパッドの入力状態格納用変数
-    //好きなボタン
+    //すべてのボタンに反応させるため
     Pad = GetJoypadInputState(DX_INPUT_KEY_PAD1);        //入力状態をPadに格納
-    for (int i = 0; i < 28; i++)
+    for (int i = 0; i < 28; i++)        //28個のボタン
     {
         if (Pad & (1 << i))
         {
@@ -55,14 +55,14 @@ SceneBase* SceneOpening::update()
             return (new SceneTitle);
         }
     }
-    //if (!isFading())
-    //{
-    //    if (m_displayCount > kWaitTime)
-    //    {
-    //        // フェードアウト開始
-    //        startFadeOut();
-    //    }
-    //}
+    if (!isFading())
+    {
+        if (m_displayCount > kWaitTime)
+        {
+            // フェードアウト開始
+            startFadeOut();
+        }
+    }
     
     return this;
 }
@@ -71,18 +71,7 @@ void SceneOpening::draw()
 {
     if (m_displayCount > kWaitTime)
     {
-        //if (isFading())
-        //{
-        //    bool isOut = isFadingOut();
-        //    SceneBase::updateFade();
-        //    // フェードアウト終了時にシーン切り替え
-        //    if (!isFading() && isOut)
-        //    {
-        //        DrawGraph(0, 0, m_BackHandle, false);
-        //    }
-        //}
-        DrawGraph(0, 0, m_BackHandle, false);
-        
+        DrawGraph(0, 0, m_BackHandle, false);   
     }
     else
     {
@@ -93,8 +82,8 @@ void SceneOpening::draw()
     //テキスト点滅
     if (m_textBlinkFrame < kTextDispFrame)
     {
-        DrawString((Game::kScreenWidth / 2) - 80,
+        DrawString((Game::kScreenWidth / 2) - 75,
             (Game::kScreenHight / 2) + 120,
-            "Press the button", kFontColor, false);
+            "Press the key", kFontColor, false);
     }
 }

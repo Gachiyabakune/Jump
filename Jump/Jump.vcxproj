@@ -159,6 +159,7 @@
     <ClCompile Include="SceneMain.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="SceneOpening.cpp" />
+    <ClCompile Include="SceneOption.cpp" />
     <ClCompile Include="SceneResult.cpp" />
     <ClCompile Include="SceneTitle.cpp" />
     <ClCompile Include="SceneTutorial.cpp" />
@@ -174,6 +175,7 @@
     <ClInclude Include="SceneMain.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="SceneOpening.h" />
+    <ClInclude Include="SceneOption.h" />
     <ClInclude Include="SceneResult.h" />
     <ClInclude Include="SceneTitle.h" />
     <ClInclude Include="SceneTutorial.h" />

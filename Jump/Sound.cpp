@@ -1,6 +1,7 @@
 #include "Sound.h"
 #include "DxLib.h"
 #include <vector>
+#include <cassert>
 
 namespace
 {
@@ -45,7 +46,7 @@ namespace Sound
 	// BGMÇÃçƒê∂
 	void startBgm(SoundId id, int volume)
 	{
-		PlaySoundMem(m_soundHandle[id], DX_PLAYTYPE_BACK, true);
+		PlaySoundMem(m_soundHandle[id], DX_PLAYTYPE_LOOP, true);
 		setVolume(id, volume);
 	}
 	void stopBgm(SoundId id)

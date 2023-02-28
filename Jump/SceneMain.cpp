@@ -23,22 +23,20 @@ void SceneMain::init()
 	player->init();
 	map->setPlayer(player);
 	map->init();
+
+	//BGM‚ğÄ¶
+	Sound::startBgm(Sound::SoundId_BgmMain,100);
 }
 
 SceneBase* SceneMain::update()
 {
 	player->updata();
 	map->updata();
-	
-	static int volume, count = 0;
-	volume = count * 4;
-	if (count > 63) count = 63;
-	count++;
-	Sound::startBgm(Sound::SoundId_BgmMain,volume);
 
 	//ƒNƒŠƒA”»’è
 	if (player->gameClear())
 	{
+		//effect->updata();
 		return(new SceneResult);
 	}
 

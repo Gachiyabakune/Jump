@@ -14,6 +14,9 @@ Player::Player() :
 	boundFlag(false),
 	jumpFlag(false),
 	revers(false),
+	idel(true),
+	clearFlag(false),
+	charge(false),
 	jumpPower(0)
 {
 }
@@ -51,8 +54,8 @@ void Player::updata()
 	MoveY = 0.0f;
 
 	//-----左右の移動を見る-----
+	bool walk = false;		//歩いているかどうか
 	
-	bool walk = false;
 	//左を押している時かつジャンプ中でもない時
 	if ((Pad::isPress(PAD_INPUT_LEFT) && !moveFlag ))
 	{
@@ -100,7 +103,6 @@ void Player::updata()
 			revers = false;
 		}
 	}
-
 	//ジャンプ処理
 	jump(MoveX, MoveY);
 	//キャラクターのアニメーション
@@ -194,20 +196,20 @@ void Player::jump(float MoveX, float MoveY)
 			idel = false;
 			//ジャンプパワーチャージ
 			jumpPower++;
-
+			charge = true;	//チャージしている	
 			//ジャンプ中にどの方向に飛ぶのかを決定
 			if (Pad::isTrigger(PAD_INPUT_LEFT))
 			{
 				direction = 1;	//左に飛ぶなら1
-				revers = false;
+				revers = false;	//キャラの反転
 			}
 			if (Pad::isTrigger(PAD_INPUT_RIGHT))
 			{
 				direction = 2;	//右に飛ぶなら2
-				revers = true;
+				revers = true;	//キャラの反転
 			}
 		}
-		//カウントがたまると強制ジャンプ
+		//ボタンを離した時かカウントがたまると強制ジャンプ
 		if (Pad::isRelase(PAD_INPUT_1) || jumpPower == ChargeTimeLvMax)
 		{
 			//ため段階が短いと小ジャンプ
@@ -291,7 +293,9 @@ void Player::jump(float MoveX, float MoveY)
 
 			jumpFlag = true;				//ジャンプ中にフラグを変更
 			jumpAfterInterval = false;		//ジャンプ後のインターバル
+			charge = false;					//チャージモーションを解除
 			jumpPower = 0;					//ジャンプパワーを元に戻す
+			jumpMotion = true;
 
 			Sound::play(Sound::SoundId_Jump);
 			}
@@ -305,12 +309,13 @@ void Player::jump(float MoveX, float MoveY)
 		direction = 0;
 		jumpAfterInterval = true;
 		boundFlag = false;
+		jumpMotion = false;
 	}
 }
 
 void Player::cAnimation(bool walk)
 {
-	//idel状体かどうか
+	//idel状体
 	if (idel)
 	{
 		IdelInterval++;
@@ -324,18 +329,37 @@ void Player::cAnimation(bool walk)
 			IdelInterval = 0;
 		}
 	}
-	//walkかどうか
+	//WALK
 	else if (walk)
 	{
-		if (chipNum > 79)
+		if (chipNum < 72 || chipNum == 107)
 		{
 			chipNum = 72;
 		}
-		if (IdelInterval == 10)
+		else if (chipNum == 79)
+		{
+			chipNum = 72;
+		}
+		if (IdelInterval == 6)
 		{
 			chipNum++;
 			IdelInterval = 0;
 		}
+		IdelInterval++;
+	}
+	//ジャンプ前チャージ
+	else if (charge)
+	{
+		chipNum = 107;
+	}
+	//ジャンプ中
+	else if (jumpMotion)
+	{
+		chipNum = 57;
+	}
+	else
+	{
+		chipNum = 0;
 	}
 }
 
