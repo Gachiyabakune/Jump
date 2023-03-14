@@ -5,9 +5,10 @@ class SceneOpening : public SceneBase
 public:
 	SceneOpening() 
 	{
-		m_BackHandle = -1;
 		m_textBlinkFrame = 0;
 		m_displayCount = 0;
+		m_titleHandle = -1;
+		m_clip = -1;
 	}
 	virtual ~SceneOpening() {}
 
@@ -21,9 +22,16 @@ public:
 private:
 	//　
 	int m_displayCount;
-	// タイトル背景
-	int m_BackHandle;
+	// タイトル
+	int m_titleHandle;
+	//デモ映像
+	int m_clip;
 	// テキスト点滅用フレームカウント
 	int m_textBlinkFrame;
+	//フォントの座標
+	int m_fontX;
+	int m_fontY;
+	//フォントを上下移動させるためのsin
+	float sinRate;
 };
 

@@ -8,17 +8,18 @@ namespace
 	// サウンドハンドル
 	std::vector<int>	m_soundHandle;
 
+
 	// サウンドファイル名
 	const char* const kFileName[Sound::SoundId_Num] =
 	{
 		// BGM
-		"Sound/BGM.mp3",
+		"Sound/BGMMain.wav",
+		"Sound/BGMEasy.wav",
+	
 		// 効果音
-		"Sound/jump.mp3",
-		"Sound/fall.mp3",
-		"Sound/bound.mp3",
+		"Sound/jump.wav",
 		"Sound/menu.mp3",
-		"Sound/button.mp3"
+		"Sound/button.wav"
 	};
 }
 

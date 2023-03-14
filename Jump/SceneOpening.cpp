@@ -4,6 +4,7 @@
 #include "Pad.h"
 #include "Sound.h"
 #include "game.h"
+#include <string>
 
 namespace
 {
@@ -12,7 +13,7 @@ namespace
 	constexpr int kTextHideFrame = 15;
 
     //何秒押されていないか
-    constexpr int kWaitTime = 1200;
+    constexpr int kWaitTime = 120;
 
 	// 文字色
 	const int kFontColor = GetColor(255, 255, 255);
@@ -24,17 +25,24 @@ void SceneOpening::init()
     m_textBlinkFrame = 0;
     SetFontSize(20);
 
-    m_BackHandle = LoadGraph("Data/sora.jpg");
+    m_titleHandle = LoadGraph("Title/title.png");
+
+    m_fontX = 200;
+    m_fontY = 120;
+
+    sinRate = 0.0f;
 }
 
 void SceneOpening::end()
 {
-    DeleteGraph(m_BackHandle);
+    DeleteGraph(m_titleHandle);
     SetFontSize(16);
 }
 
 SceneBase* SceneOpening::update()
 {
+    //タイトルの上下移動
+    sinRate += 0.05f;
     //kWaitTimeの間ボタンが押されなければ表示する
     m_displayCount++;
     // テキストの点滅
@@ -43,42 +51,51 @@ SceneBase* SceneOpening::update()
     {
         m_textBlinkFrame = 0;
     }
-
-    int Pad;        //ジョイパッドの入力状態格納用変数
-    //すべてのボタンに反応させるため
-    Pad = GetJoypadInputState(DX_INPUT_KEY_PAD1);        //入力状態をPadに格納
-    for (int i = 0; i < 28; i++)        //28個のボタン
+    if (isFading())
     {
-        if (Pad & (1 << i))
+        bool isOut = isFadingOut();
+        SceneBase::updateFade();
+        // フェードアウト終了時にシーン切り替え
+        if (!isFading() && isOut)
         {
-            Sound::play(Sound::SoundId_Decision);
             return (new SceneTitle);
         }
     }
+    int Pad;        //ジョイパッドの入力状態格納用変数
     if (!isFading())
     {
-        if (m_displayCount > kWaitTime)
+        //すべてのボタンに反応させるため
+        Pad = GetJoypadInputState(DX_INPUT_KEY_PAD1);        //入力状態をPadに格納
+        for (int i = 0; i < 28; i++)        //28個のボタン
         {
-            // フェードアウト開始
-            startFadeOut();
+            if (Pad & (1 << i))
+            {
+                Sound::play(Sound::SoundId_Decision);
+                // フェードアウト開始
+                startFadeOut();
+            }
         }
     }
-    
     return this;
-}
+} 
 
 void SceneOpening::draw()
 {
-    if (m_displayCount > kWaitTime)
+    //if (m_displayCount > kWaitTime)
+    //{
+    //    //DrawGraph(0, 0, m_clip, false);
+   
+    //    //デモムービーを再生
+    //    PlayMovie("Clip/Demo.mp4",1, DX_MOVIEPLAYTYPE_NORMAL);
+    //}
+    //else
     {
-        DrawGraph(0, 0, m_BackHandle, false);   
-    }
-    else
-    {
-        DrawBox(150, 50, 628, 380, kFontColor, true);
-        DrawString(320, 190, "タイトル(仮)", kColor, false);
+        int moveY = sinf(sinRate * 2) * 4;
+        DrawGraph(m_fontX, m_fontY + moveY, m_titleHandle, false);
     }
    
+    //DrawFormatString(300, 550, GetColor(255, 255, 255), "%d秒後デモムービーが流れます",);
+
     //テキスト点滅
     if (m_textBlinkFrame < kTextDispFrame)
     {

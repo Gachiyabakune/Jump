@@ -40,6 +40,15 @@ SceneBase* SceneMain::update()
 		return(new SceneResult);
 	}
 
+
+#ifdef _DEBUG
+	if (Pad::isTrigger(PAD_INPUT_5))
+	{
+		return(new SceneTitle);
+	}
+#endif 
+	return this;
+
 	return this;
 }
 

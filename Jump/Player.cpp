@@ -42,6 +42,9 @@ void Player::init()
 		CharChipX, CharChipY,
 		48, 48,
 		Cchip);
+
+	//
+	Sound::setVolume(Sound::SoundId_Jump, 200);
 }
 
 void Player::updata()
@@ -119,6 +122,7 @@ void Player::updata()
 		// 重力
 		fallSpeed += Gravity;
 	}
+	
 #else
 	// 重力
 	fallSpeed += Gravity;
@@ -175,11 +179,7 @@ void Player::draw()
 	DrawFormatString(0, 60, GetColor(255, 255, 255), "dirJ : %d", directionJump);	//Y座標	
 	
 	DrawFormatString(0, 80, GetColor(255, 255, 255), " Jpower : %d", jumpPower);	//ジャンプパワー
-	DrawFormatString(0, 200, GetColor(255, 255, 255), "%d", chipNum);	//
-
-	SetFontSize(32);
-	//DrawString(0, 80, "Aボタンで溜め、溜めている間に十字キーで\n飛ぶ方向を決定\nため段階でジャンプ力変化", GetColor(255, 255, 255));	//真上に飛ぶ
-	SetFontSize(16);
+	DrawFormatString(0, 200, GetColor(255, 255, 255), "%d", chipNum);
 #endif
 }
 
@@ -198,15 +198,19 @@ void Player::jump(float MoveX, float MoveY)
 			jumpPower++;
 			charge = true;	//チャージしている	
 			//ジャンプ中にどの方向に飛ぶのかを決定
-			if (Pad::isTrigger(PAD_INPUT_LEFT))
+			if (Pad::isPress(PAD_INPUT_LEFT))
 			{
 				direction = 1;	//左に飛ぶなら1
 				revers = false;	//キャラの反転
 			}
-			if (Pad::isTrigger(PAD_INPUT_RIGHT))
+			else if (Pad::isPress(PAD_INPUT_RIGHT))
 			{
 				direction = 2;	//右に飛ぶなら2
 				revers = true;	//キャラの反転
+			}
+			else
+			{
+				direction = 0;
 			}
 		}
 		//ボタンを離した時かカウントがたまると強制ジャンプ
@@ -313,6 +317,7 @@ void Player::jump(float MoveX, float MoveY)
 	}
 }
 
+//キャラクターのアニメーション
 void Player::cAnimation(bool walk)
 {
 	//idel状体
@@ -329,14 +334,10 @@ void Player::cAnimation(bool walk)
 			IdelInterval = 0;
 		}
 	}
-	//WALK
+	//歩いているとき
 	else if (walk)
 	{
-		if (chipNum < 72 || chipNum == 107)
-		{
-			chipNum = 72;
-		}
-		else if (chipNum == 79)
+		if (chipNum < 10)
 		{
 			chipNum = 72;
 		}
@@ -344,6 +345,10 @@ void Player::cAnimation(bool walk)
 		{
 			chipNum++;
 			IdelInterval = 0;
+		}
+		if (chipNum == 79)
+		{
+			chipNum = 72;
 		}
 		IdelInterval++;
 	}
@@ -355,7 +360,7 @@ void Player::cAnimation(bool walk)
 	//ジャンプ中
 	else if (jumpMotion)
 	{
-		chipNum = 57;
+		chipNum = 59;
 	}
 	else
 	{
@@ -459,7 +464,7 @@ int Player::mapHitCheck(float X, float Y, float& MoveX, float& MoveY)
 	afterY = Y + MoveY;
 
 	// 当たり判定のあるブロックに当たっているかチェック
-	if (pmap->GetChipParam(afterX, afterY) == 10 || pmap->GetChipParam(afterX, afterY) == 2)
+	if (pmap->GetChipParam(afterX, afterY) == 2)
 	{
 		float blockLeftX, blockTopY, blockRightX, blockBottomY;
 
@@ -532,7 +537,7 @@ int Player::mapHitCheck(float X, float Y, float& MoveX, float& MoveY)
 	}
 
 	/*------クリアの時(3に当たった時)フラグを返す------*/
-	if (pmap->GetChipParam(afterX, afterY) == 10 || pmap->GetChipParam(afterX, afterY) == 3)
+	if ( pmap->GetChipParam(afterX, afterY) == 3)
 	{
 		float blockLeftX, blockTopY, blockRightX, blockBottomY;
 

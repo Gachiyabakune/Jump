@@ -6,15 +6,16 @@ namespace Sound
 	typedef enum SoundId
 	{
 		// BGM
-		SoundId_BgmMain,	// 選択画面のBGM
-		//SoundId_BgmClear,	// クリア後のBGM
+		SoundId_BgmMain,	// 難しいステージのBGM
+		SoundId_BgmEasy,	// かんたんなステージのBGM
+		//SoundId_BgmClear,	// クリア後ののBGM
+		//SoundId_Title,		//タイトル画面のBGM
 
 		// 効果音
 		SoundId_Jump,		// ジャンプするとき
-		SoundId_fall,		// 着地するとき
-		SoundId_Bound,	// 反射するとき
 		SoundId_Select,		// 選択画面で選んでいるとき
 		SoundId_Decision,	// 選択画面で決定したとき
+		//SoundId_Clear,		//クリアしたときの音
 
 		SoundId_Num
 	}SoundId;

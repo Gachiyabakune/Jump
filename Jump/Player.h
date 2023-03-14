@@ -54,8 +54,7 @@ private:
 	Map* pmap;
 	float x, y;		// プレイヤーの座標(中心座標)
 	float fallSpeed;	// プレイヤーの落下速度
-	bool jumpFlag;	// プレイヤーがジャンプ中か、のフラグ
-	bool revers;	//画像を反転させるか
+	
 	int	m_size;	// 画像のサイズ（縦横同じ）
 	int Cchip[CharChipAll];
 	int jumpPower;	//ジャンプパワー
@@ -73,6 +72,9 @@ private:
 	bool charge;	//チャージしているかどうか
 	bool jumpMotion = false;		//ジャンプモーション
 	bool boundFlag;			//壁に当たり反射したか
+	bool jumpFlag;	// プレイヤーがジャンプ中か、のフラグ
+	bool revers;	//画像を反転させるか
+	bool fallFlag;	//落下しているか
 
 };
 
