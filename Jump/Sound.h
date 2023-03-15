@@ -8,8 +8,8 @@ namespace Sound
 		// BGM
 		SoundId_BgmMain,	// 難しいステージのBGM
 		SoundId_BgmEasy,	// かんたんなステージのBGM
-		//SoundId_BgmClear,	// クリア後ののBGM
-		//SoundId_Title,		//タイトル画面のBGM
+		SoundId_BgmClear,	// クリア後ののBGM
+		SoundId_Title,		//タイトル画面のBGM
 
 		// 効果音
 		SoundId_Jump,		// ジャンプするとき

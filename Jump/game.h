@@ -9,7 +9,7 @@ namespace Game
 	//ウィンドウモード設定
 	constexpr bool kWindowmode = false;
 #endif
-	const char* const kTitleText = "ＧＡＭＥ";
+	const char* const kTitleText = "Jump People";
 	//ウィンドウサイズ
 	constexpr int kScreenWidth = 768;	//768 or 1024
 	constexpr int kScreenHight = 576;

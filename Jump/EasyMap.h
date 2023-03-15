@@ -27,7 +27,6 @@ public:
 	void draw();
 
 	void clearUpdata();
-	void clearDraw();
 
 	void setPlayer(Player2* player) { pPlayer = player; }
 

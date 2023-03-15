@@ -11,8 +11,8 @@ namespace
 {
 	//テキスト
 	const char* const kTitkeMessage = "GAME CLEAR";
-	constexpr int kStandbyTime = 60;
-	constexpr int kStandbyTime2 = 120;
+	constexpr int kStandbyTime = 60;	//クリア後からフォントが出てくるまでの時間
+	constexpr int kStandbyTime2 = 180;	//ランキングなどが出てくる時間
 }
 
 SceneTutorial::~SceneTutorial()
@@ -67,13 +67,15 @@ SceneBase* SceneTutorial::update()
 		updateClear();
 		break;
 	}
-	//デバック用
-#ifdef _DEBUG
-	if (Pad::isTrigger(PAD_INPUT_5))
+
+	if (player->gameClear())
 	{
-		return(new SceneTitle);
+		if (Pad::isTrigger(PAD_INPUT_4))
+		{
+			return(new SceneTitle);
+		}
 	}
-#endif 
+
 	return this;
 }
 
@@ -155,16 +157,18 @@ void SceneTutorial::drawClear()
 
 		if (temp < hiscore)
 		{
-			DrawFormatString(250, 480, GetColor(255, 255, 255), "ランキング1位になりました:%d秒", temp);
+			DrawFormatString(250, 430, GetColor(255, 255, 255), "ランキング1位になりました:%d秒", temp);
 		}
 		else if (temp > hiscore)
 		{
-			DrawFormatString(250, 480, GetColor(255, 255, 255), "ランキング1位のタイム:%d秒", hiscore);
+			DrawFormatString(250, 430, GetColor(255, 255, 255), "ランキング1位のタイム:%d秒", hiscore);
 		}
 		else
 		{
-			DrawFormatString(250, 480, GetColor(255, 255, 255), "ランキング1位になりました:%d秒", temp);
+			DrawFormatString(250, 430, GetColor(255, 255, 255), "ランキング1位になりました:%d秒", temp);
 		}
+
+		DrawString(250, 460, "Yボタンでタイトルへ", GetColor(255, 255, 255));
 	}
 }
 

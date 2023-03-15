@@ -15,6 +15,8 @@ namespace
 		// BGM
 		"Sound/BGMMain.wav",
 		"Sound/BGMEasy.wav",
+		"Sound/BGMClear.wav",
+		"Sound/BGMTitle.mp3",
 	
 		// Œø‰Ê‰¹
 		"Sound/jump.wav",

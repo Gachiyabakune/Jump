@@ -183,7 +183,7 @@ void EasyMap::draw()
 			//3ÇÕÉSÅ[Éã
 			else if (MapData[y][x] == 3)
 			{
-				DrawGraph(posX, posY, Mchip[9], FALSE);
+				DrawGraph(posX, posY, Mchip[21], TRUE);
 			}
 		}
 	}
@@ -192,11 +192,6 @@ void EasyMap::draw()
 void EasyMap::clearUpdata()
 {
 	offset++;	//è„Ç…Ç∏ÇÁÇ∑
-}
-
-void EasyMap::clearDraw()
-{
-	
 }
 
 int EasyMap::GetChipParam(float X, float Y)

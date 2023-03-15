@@ -28,7 +28,7 @@ void SceneOpening::init()
     m_titleHandle = LoadGraph("Title/title.png");
 
     m_fontX = 200;
-    m_fontY = 120;
+    m_fontY = 200;
 
     sinRate = 0.0f;
 }

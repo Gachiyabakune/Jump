@@ -4,7 +4,7 @@
 class SceneTitle : public SceneBase
 {
 public:
-	SceneTitle(){}
+	SceneTitle();
 	virtual ~SceneTitle() {}
 
 
@@ -15,20 +15,18 @@ public:
 	virtual void draw()override;
 
 private:
-	//bool select1 = false;
-	//bool select2 = false;
-	//bool select3 = false;
-	//bool select4 = false;
-
 	// カーソル移動
-	int cursorIndex = 0;
-	int cursorNext = 0;
-	int cursorMoveFrame = 0;
+	int cursorIndex;
+	int cursorNext;
+	int cursorMoveFrame;
 	//フォント
 	int menuItemHandle;
 	//インターバル
 	int m_interval;
-	int frameCount = 0;
+	int frameCount;
 	//サイン
-	float sinRate = 0.0f;
+	float sinRate;
+
+	//宝箱を表示させるため
+	int chip[40];
 };

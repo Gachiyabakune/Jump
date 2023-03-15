@@ -3,89 +3,51 @@
 #include "SceneMain.h"
 #include "SceneTutorial.h"
 #include "SceneOpening.h"
-#include "SceneOption.h"
+#include "SceneResult.h"
 #include "Sound.h"
 #include "Pad.h"
 #include "game.h"
 
-//typedef enum 
-//{
-//	eMenu_Game_Easy,		//チュートリアル
-//	eMenu_Game_Hard,         //ゲーム
-//	eMenu_Config,       //設定
-//	eMenu_End,			//終了
-//	eMenu_Num,        //本項目の数
-//} eMenu;
-
-//static int NowSelect = eMenu_Game_Easy;    //現在の選択状態(初期はゲーム選択中)
-
 namespace
 {
 	// タイトルとサンプルの説明
-	const char* const kTitkeMessage = "いい感じのUIサンプル";
 	const char* const kMenuItemMessage[] =
 	{
-		"かんたん",
-		"むずかしい",
-		"そうさ",
-		"おわる",
+		"EASY",
+		"HARD",
+		"OPERATION",
+		"END",
 	};
-	// 数字フォントのサイズ
-	constexpr int kFontWidth = 16;
-	constexpr int kFontHeight = 32;
 	// カーソル
 	constexpr int kCursorMoveFrame = 30;
-	// ウインドウ
-	constexpr int kWindowAppearFrame = 30;
-	// 文字色
-	const int kFontColor = GetColor(125, 125, 125);
-	const int kFontSelectColor = GetColor(255, 255, 255);
+}
+
+SceneTitle::SceneTitle() :
+	cursorIndex(0),
+	cursorNext(0),
+	cursorMoveFrame(0),
+	menuItemHandle(0),
+	m_interval(0),
+	frameCount(0)
+{
+	sinRate = 0.0f;
 }
 
 void SceneTitle::init()
 {
+	//マップ
+	LoadDivGraph("data/mapchip.png",
+		40,
+		10, 4,
+		32, 32,
+		chip);
+
 	m_interval = 0;
 	menuItemHandle = CreateFontToHandle("メイリオ", 24, 8, DX_FONTTYPE_ANTIALIASING_8X8);
 }
 
 SceneBase* SceneTitle::update()
 {	
-	//if(Pad::isTrigger(PAD_INPUT_2))
-	//{
-	//	switch (NowSelect)
-	//	{
-	//	case eMenu_Game_Easy:
-	//		 Sound::play(Sound::SoundId_Decision);
-	//		return (new SceneTutorial);
-	//		break;
-	//	case eMenu_Game_Hard:
-	//		Sound::play(Sound::SoundId_Decision);
-	//		return (new SceneMain);
-	//		break;
-	//	case eMenu_End:
-	//		return (new SceneOpening);
-	//		break;
-	//	case eMenu_Config:
-	//		//return (new SceneOption);
-	//		break;
-	//	default:
-	//		break;
-	//	}
-	//	
-	//}
-	////上
-	//if (Pad::isTrigger(PAD_INPUT_UP))
-	//{
-	//	NowSelect = (NowSelect + (eMenu_Num - 1)) % eMenu_Num;//選択状態を一つ上げる
-	//	Sound::play(Sound::SoundId_Select);
-	//}
-	////下
-	//if (Pad::isTrigger(PAD_INPUT_DOWN))
-	//{
-	//	NowSelect = (NowSelect + 1) % eMenu_Num;//選択状態を一つ下げる
-	//	Sound::play(Sound::SoundId_Select);
-	//}
-	
 	frameCount++;
 	sinRate += 0.1f;
 
@@ -99,6 +61,7 @@ SceneBase* SceneTitle::update()
 		}
 		cursorMoveFrame = kCursorMoveFrame;
 		m_interval = 30;
+		Sound::play(Sound::SoundId_Select);
 	}
 	//上キー
 	else if (Pad::isTrigger(PAD_INPUT_UP) && m_interval == 0)
@@ -109,7 +72,8 @@ SceneBase* SceneTitle::update()
 			cursorNext = _countof(kMenuItemMessage) - 1;
 		}
 		cursorMoveFrame = kCursorMoveFrame;
-		m_interval = 60;
+		m_interval = 30;
+		Sound::play(Sound::SoundId_Select);
 	}
 	if (cursorIndex != cursorNext)
 	{
@@ -131,15 +95,19 @@ SceneBase* SceneTitle::update()
 		switch (cursorIndex)
 		{
 		case 0:
+			Sound::play(Sound::SoundId_Decision);
 			return (new SceneTutorial);
 			break;
 		case 1:
+			Sound::play(Sound::SoundId_Decision);
 			return (new SceneMain);
 			break;
 		case 2:
-			//return (new Scene)
+			Sound::play(Sound::SoundId_Decision);
+			return (new SceneResult);
 			break;
 		case 3:
+			Sound::play(Sound::SoundId_Decision);
 			return (new SceneOpening);
 			break;
 		}
@@ -149,84 +117,12 @@ SceneBase* SceneTitle::update()
 
 void SceneTitle::draw()
 {
-	//int y = 0;
-	//DrawString(200, 150, "", GetColor(255, 255, 255));
-	//DrawString(200, 170, "上下キーで選択し、2ボタンを押して下さい。", GetColor(255, 255, 255));
-	//if (select1)
-	//{
-	//	DrawString(Game::kScreenWidth / 2 - 25, Game::kScreenHight / 2 - 30,
-	//		"かんたん", kFontSelectColor);
-	//}
-	//else
-	//{
-	//	DrawString(Game::kScreenWidth / 2 - 40, Game::kScreenHight / 2 - 30,
-	//		"かんたん", kFontColor);
-	//}
-	//if (select2)
-	//{
-	//	DrawString(Game::kScreenWidth / 2 - 25, Game::kScreenHight / 2,
-	//		"むずかしい", kFontSelectColor);
-	//}
-	//else
-	//{
-	//	DrawString(Game::kScreenWidth / 2 - 40, Game::kScreenHight / 2,
-	//		"むずかしい", kFontColor);
-	//}
-	//if (select3)
-	//{
-	//	DrawString(Game::kScreenWidth / 2 - 25, Game::kScreenHight / 2 + 30,
-	//		"そうさ", kFontSelectColor);
-	//}
-	//else
-	//{
-	//	DrawString(Game::kScreenWidth / 2 - 40, Game::kScreenHight / 2 + 30,
-	//		"そうさ", kFontColor);
-	//}
-	//if (select4)
-	//{
-	//	DrawString(Game::kScreenWidth / 2 - 25, Game::kScreenHight / 2 + 60,
-	//		"おわる", kFontSelectColor);
-	//}
-	//else
-	//{
-	//	DrawString(Game::kScreenWidth / 2 - 40, Game::kScreenHight / 2 + 60,
-	//		"おわる", kFontColor);
-	//}
+	DrawGraph(270, 200, chip[21], TRUE);
+	SetFontSize(32);
+	DrawString(300, 200, "をみつけだせ", GetColor(255, 255, 255));
+	SetFontSize(16);
 
-	////選んだ項目によって座標や色などを変えているのでコードが長くなる
-	//switch (NowSelect)
-	//{//現在の選択状態に従って処理を分岐
-	//case eMenu_Game_Easy://ゲーム選択中なら
-	//	y = 258;    //ゲームの座標を格納
-	//	select1 = true;
-	//	select2 = false;
-	//	select3 = false;
-	//	select4 = false;
-	//	break;
-	//case eMenu_Game_Hard:
-	//	y = 288;
-	//	select2 = true;
-	//	select1 = false;
-	//	select3 = false;
-	//	select4 = false;
-	//	break;
-	//case eMenu_Config:
-	//	y = 318;
-	//	select3 = true;
-	//	select1 = false;
-	//	select2 = false;
-	//	select4 = false;
-	//	break;
-	//case eMenu_End:
-	//	y = 348;
-	//	select4 = true;
-	//	select2 = false;
-	//	select3 = false;
-	//	select1 = false;
-	//	break;
-	//}
-
-	//DrawString(Game::kScreenWidth / 2 - 70, y, "⇒", GetColor(255, 0, 255));
+	DrawString(330, 280, "Bボタンで選択", GetColor(255, 255, 255));
 
 	float cursorY = 0.0f;
 	for (int i = 0; i < _countof(kMenuItemMessage); i++)
@@ -265,15 +161,15 @@ void SceneTitle::draw()
 			}
 			cursorY = (330 + 32 * cursorNext) * (1.0f - rate) + (330 + 32 * cursorIndex) * rate;
 		}
-		DrawStringToHandle(256, posY, kMenuItemMessage[i], GetColor(r, g, b), menuItemHandle);
+		DrawStringToHandle(350, posY, kMenuItemMessage[i], GetColor(r, g, b), menuItemHandle);
 	}
 	{
 		int cursorHeight = sinf(sinRate) * 12.0f;	// 実際にはHeight/2
-		DrawTriangle(248, cursorY + 12,
-			238, cursorY + 12 - cursorHeight,
-			238, cursorY + 12 + cursorHeight, 0xff0000, true);
-		DrawTriangle(248, cursorY + 12,
-			238, cursorY + 12 - cursorHeight,
-			238, cursorY + 12 + cursorHeight, 0xffffff, false);
+		DrawTriangle(335, cursorY + 12,
+			325, cursorY + 12 - cursorHeight,
+			325, cursorY + 12 + cursorHeight, 0xff0000, true);
+		DrawTriangle(335, cursorY + 12,
+			325, cursorY + 12 - cursorHeight,
+			325, cursorY + 12 + cursorHeight, 0xffffff, false);
 	}
 }

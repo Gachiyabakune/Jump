@@ -14,7 +14,7 @@ void SceneResult::init()
 
 SceneBase* SceneResult::update()
 {
-	if (Pad::isTrigger(PAD_INPUT_1))
+	if (Pad::isTrigger(PAD_INPUT_4))
 	{
 		return(new SceneTitle);
 	}
@@ -23,5 +23,7 @@ SceneBase* SceneResult::update()
 
 void SceneResult::draw()
 {
-	DrawString(4, 0, "ゲームクリア", GetColor(255, 255, 255));
+	DrawString(4, 0, "Aボタンでジャンプ", GetColor(255, 255, 255));
+	DrawString(4, 20, "長押しでジャンプ力が変わるよ", GetColor(255, 255, 255));
+	DrawString(4, 40, "Yボタンでタイトルへ", GetColor(255, 255, 255));
 }

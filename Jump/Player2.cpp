@@ -123,7 +123,7 @@ void Player2::updata()
 
 #else
 	// 重力
-	fallSpeed += Gravity;
+	fallSpeed += G;
 #endif
 	// 落下速度を移動量に加える
 	MoveY = fallSpeed;
@@ -322,22 +322,8 @@ void Player2::jump(float MoveX, float MoveY)
 //キャラクターのアニメーション
 void Player2::cAnimation(bool walk)
 {
-	//idel状体
-	if (idel)
-	{
-		IdelInterval++;
-		if (chipNum > 9)
-		{
-			chipNum = 0;
-		}
-		if (IdelInterval == 10)
-		{
-			chipNum++;
-			IdelInterval = 0;
-		}
-	}
 	//歩いているとき
-	else if (walk)
+	if (walk)
 	{
 		if (chipNum < 10)
 		{
@@ -354,6 +340,20 @@ void Player2::cAnimation(bool walk)
 		}
 		IdelInterval++;
 	}
+	////idel状体
+	//else if (idel)
+	//{
+	//	IdelInterval++;
+	//	if (chipNum > 9)
+	//	{
+	//		chipNum = 0;
+	//	}
+	//	if (IdelInterval == 10)
+	//	{
+	//		chipNum++;
+	//		IdelInterval = 0;
+	//	}
+	//}
 	//ジャンプ前チャージ
 	else if (charge)
 	{
