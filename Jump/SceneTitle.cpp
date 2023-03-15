@@ -42,6 +42,9 @@ void SceneTitle::init()
 		32, 32,
 		chip);
 
+	//BGMを再生
+	Sound::startBgm(Sound::SoundId_BgmTitle, 0);
+
 	m_interval = 0;
 	menuItemHandle = CreateFontToHandle("メイリオ", 24, 8, DX_FONTTYPE_ANTIALIASING_8X8);
 }
@@ -92,6 +95,7 @@ SceneBase* SceneTitle::update()
 
 	if (Pad::isTrigger(PAD_INPUT_2))
 	{
+		Sound::stopBgm(Sound::SoundId_BgmTitle);
 		switch (cursorIndex)
 		{
 		case 0:
@@ -112,6 +116,12 @@ SceneBase* SceneTitle::update()
 			break;
 		}
 	}
+
+	int volume = 0;
+	volume += frameCount * 4;
+	if (volume > 150)	volume = 150;
+	Sound::setVolume(Sound::SoundId_BgmTitle, volume);
+
 	return this;
 }
 
