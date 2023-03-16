@@ -40,7 +40,7 @@ void SceneTitle::init()
 		40,
 		10, 4,
 		32, 32,
-		chip);
+		chip);					
 
 	//BGMを再生
 	Sound::startBgm(Sound::SoundId_BgmTitle, 0);

@@ -6,8 +6,8 @@ namespace
 {
 	// マップチップロード
 	constexpr int ChipSize = 32;   //マップチップサイズ
-	constexpr int ChipX = 10;  // 横10種類
-	constexpr int ChipY = 4;   // 縦4種類1
+	constexpr int ChipX = 16;  // 横10種類
+	constexpr int ChipY = 11;   // 縦4種類1
 	constexpr int ChipAll = ChipX * ChipY; // 合計40個
 	constexpr int Stage = 3;		//ステージ数
 	constexpr int MAP_X = 24;

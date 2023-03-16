@@ -189,10 +189,10 @@ void SceneTutorial::refreshScore()
 		fprintf_s(fp, "%d",temp);
 		fclose(fp);
 	}
-	else if (fp == NULL || hiscore < temp)
+	/*else if (fp == NULL || hiscore < temp)
 	{
 		DrawFormatString(250, 450, GetColor(255, 255, 255), "1ˆÊ‚Í%d•b", hiscore);
-	}
+	}*/
 }
 
 int SceneTutorial::getHiScore()

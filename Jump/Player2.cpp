@@ -435,7 +435,7 @@ int Player2::movePlayer(float MoveX, float MoveY)
 
 	// 接地判定
 		// キャラクタの左下と右下の下に地面があるか調べる
-	if (pEmap->GetChipParam(x + m_size * 0.5f - 16.0f, y + m_size * 0.5f + 1.0f) == 5)
+	if (pEmap->GetChipParam(x + m_size * 0.5f - 16.0f, y + m_size * 0.5f + 1.0f) == 176)
 	{
 		// 足場が無かったらジャンプ中にする
 		jumpFlag = TRUE;
@@ -466,7 +466,12 @@ int Player2::mapHitCheck(float X, float Y, float& MoveX, float& MoveY)
 	afterY = Y + MoveY;
 
 	// 当たり判定のあるブロックに当たっているかチェック
-	if (pEmap->GetChipParam(afterX, afterY) == 2)
+	if (pEmap->GetChipParam(afterX, afterY) == 12 || pEmap->GetChipParam(afterX, afterY) == 13 ||
+		pEmap->GetChipParam(afterX, afterY) == 14 || pEmap->GetChipParam(afterX, afterY) == 15 ||
+		pEmap->GetChipParam(afterX, afterY) == 22 || pEmap->GetChipParam(afterX, afterY) == 23 || 
+		pEmap->GetChipParam(afterX, afterY) == 24 || pEmap->GetChipParam(afterX, afterY) == 6  || 
+		pEmap->GetChipParam(afterX, afterY) ==  7 || pEmap->GetChipParam(afterX, afterY) == 8  || 
+		pEmap->GetChipParam(afterX, afterY) == 31 || pEmap->GetChipParam(afterX, afterY) == 47 )
 	{
 		float blockLeftX, blockTopY, blockRightX, blockBottomY;
 
@@ -538,8 +543,8 @@ int Player2::mapHitCheck(float X, float Y, float& MoveX, float& MoveY)
 		return 4;
 	}
 
-	/*------クリアの時(3に当たった時)フラグを返す------*/
-	if (pEmap->GetChipParam(afterX, afterY) == 3)
+	/*------クリアの時(156に当たった時)フラグを返す------*/
+	if (pEmap->GetChipParam(afterX, afterY) == 156)
 	{
 		float blockLeftX, blockTopY, blockRightX, blockBottomY;
 
