@@ -31,6 +31,8 @@ void SceneOpening::init()
     m_fontY = 200;
 
     sinRate = 0.0f;
+
+    nextScene = false;
 }
 
 void SceneOpening::end()
@@ -41,60 +43,31 @@ void SceneOpening::end()
 
 SceneBase* SceneOpening::update()
 {
-    //タイトルの上下移動
-    sinRate += 0.05f;
-    //kWaitTimeの間ボタンが押されなければ表示する
-    m_displayCount++;
-    // テキストの点滅
-    m_textBlinkFrame++;
-    if (m_textBlinkFrame >= kTextDispFrame + kTextHideFrame)
+    switch (m_seq)
     {
-        m_textBlinkFrame = 0;
+    case Seq::SeqFadeIn:
+        FadeInUpdate();
+        break;
+    case Seq::SeqUpdata:
+        NormalUpdate();
+        break;
+    case Seq::SeqFadeOut:
+        FadeOutUpdate();
+        break;
     }
-    if (isFading())
+    if (nextScene)
     {
-        bool isOut = isFadingOut();
-        SceneBase::updateFade();
-        // フェードアウト終了時にシーン切り替え
-        if (!isFading() && isOut)
-        {
-            return (new SceneTitle);
-        }
+        return (new SceneTitle);
     }
-    int Pad;        //ジョイパッドの入力状態格納用変数
-    if (!isFading())
-    {
-        //すべてのボタンに反応させるため
-        Pad = GetJoypadInputState(DX_INPUT_KEY_PAD1);        //入力状態をPadに格納
-        for (int i = 0; i < 28; i++)        //28個のボタン
-        {
-            if (Pad & (1 << i))
-            {
-                Sound::play(Sound::SoundId_Decision);
-                // フェードアウト開始
-                startFadeOut();
-            }
-        }
-    }
-    return this;
+   
+    return (this);
 } 
 
 void SceneOpening::draw()
 {
-    //if (m_displayCount > kWaitTime)
-    //{
-    //    //DrawGraph(0, 0, m_clip, false);
-   
-    //    //デモムービーを再生
-    //    PlayMovie("Clip/Demo.mp4",1, DX_MOVIEPLAYTYPE_NORMAL);
-    //}
-    //else
-    {
-        int moveY = sinf(sinRate * 2) * 4;
-        DrawGraph(m_fontX, m_fontY + moveY, m_titleHandle, false);
-    }
-   
-    //DrawFormatString(300, 550, GetColor(255, 255, 255), "%d秒後デモムービーが流れます",);
+ 
+    int moveY = sinf(sinRate * 2) * 4;
+    DrawGraph(m_fontX, m_fontY + moveY, m_titleHandle, false);
 
     //テキスト点滅
     if (m_textBlinkFrame < kTextDispFrame)
@@ -102,5 +75,60 @@ void SceneOpening::draw()
         DrawString((Game::kScreenWidth / 2) - 75,
             (Game::kScreenHight / 2) + 120,
             "Press the key", kFontColor, false);
+    }
+
+    //今から書く画像と、すでに描画されているスクリーンとの
+    //ブレンドの仕方を指定している。
+    SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue);
+    //画面全体を真っ黒に塗りつぶす
+    DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHight, 0x000000, true);
+
+    SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
+}
+
+void SceneOpening::FadeInUpdate()
+{
+    //真っ黒から徐々に表示する場合場合
+    fadeValue = 255 * (static_cast<float>(fadeTimer) / static_cast<float>(fade_interval));
+    //グラデーションを使って徐々に表示する場合
+    /*fadeTimer_;*/
+    if (fadeTimer-- == 0)
+    {
+        m_seq = Seq::SeqUpdata;
+        fadeValue = 0;
+    }
+}
+
+void SceneOpening::NormalUpdate()
+{
+    //タイトルの上下移動
+    sinRate += 0.05f;
+    //kWaitTimeの間ボタンが押されなければ表示する
+   // m_displayCount++;
+    // テキストの点滅
+    m_textBlinkFrame++;
+    if (m_textBlinkFrame >= kTextDispFrame + kTextHideFrame)
+    {
+        m_textBlinkFrame = 0;
+    }
+    int Pad;        //ジョイパッドの入力状態格納用変数
+   //すべてのボタンに反応させるため
+    Pad = GetJoypadInputState(DX_INPUT_KEY_PAD1);        //入力状態をPadに格納
+    for (int i = 0; i < 28; i++)        //28個のボタン
+    {
+        if (Pad & (1 << i))
+        {
+            Sound::play(Sound::SoundId_Decision);
+            m_seq = Seq::SeqFadeOut;
+        }
+    }
+}
+
+void SceneOpening::FadeOutUpdate()
+{
+    fadeValue = 255 * (static_cast<float>(fadeTimer) / static_cast<float>(fade_interval));
+    if (fadeTimer++ == fade_interval)
+    {
+        nextScene = true;
     }
 }

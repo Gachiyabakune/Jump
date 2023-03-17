@@ -7,7 +7,7 @@ class SceneTutorial : public SceneBase
 public:
 	SceneTutorial()
 	{
-		m_seq = Seq::SeqWait;
+		m_seq = Seq::SeqFadeIn;
 		m_timeTaken = 0;
 		m_timer = 0;
 		temp = 10000;
@@ -22,9 +22,14 @@ public:
 	virtual void draw()override;
 
 private:
-	virtual void updateWait();	//フェード中
-	virtual void updateGame();	//ゲーム
-	virtual void updateClear();	//クリア後のupdate処理
+	//フェードインの時のUpdate関数
+	void FadeInUpdate();
+	//通常状態のUpdate関数
+	void NormalUpdate();
+	//クリア後のUpdate関数
+	void ClearUpdate();
+	//フェードアウトの時のUpdate関数
+	void FadeOutUpdate();
 
 	virtual void drawClear();	//クリア後のdraw処理
 
@@ -36,12 +41,18 @@ private:
 
 	enum class Seq
 	{
-		SeqWait,			//フェード中
+		SeqFadeIn,			//フェード中
 		SeqUpdata,			//通常のupdata
 		SeqClearUpdata,		//クリア後のupdata
+		SeqFadeOut,		//フェードアウト
 	};
 	// 現在のゲームシーケンス
 	Seq m_seq;
+
+	//フェード関係
+	static constexpr int fade_interval = 60;
+	int fadeTimer = fade_interval;		//フェードタイマー
+	int fadeValue = 255;				//黒短形のブレンド具合
 
 	//かかった時間
 	int m_timeTaken;
@@ -58,4 +69,7 @@ private:
 
 	//スコア
 	int hiscore;
+
+	//シーン切り替え
+	bool changeScene;
 };

@@ -29,11 +29,13 @@ void SceneTutorial::init()
 	map->init();
 
 	//現在のシーケンス
-	m_seq = Seq::SeqUpdata;
+	m_seq = Seq::SeqFadeIn;
 
 	m_timeTaken = 0;	//経過時間
 
 	hiscore = 1000;			//ハイスコア
+
+	changeScene = false;	//シーン切り替え
 
 	//BGMを再生
 	Sound::startBgm(Sound::SoundId_BgmEasy,0);
@@ -57,25 +59,25 @@ SceneBase* SceneTutorial::update()
 {
 	switch (m_seq)
 	{
-	case Seq::SeqWait:
-		updateWait();
+	case Seq::SeqFadeIn:
+		FadeInUpdate();
 		break;
 	case Seq::SeqUpdata:
-		updateGame();
+		NormalUpdate();
 		break;
 	case Seq::SeqClearUpdata:
-		updateClear();
+		ClearUpdate();
+		break;
+	case Seq::SeqFadeOut:
+		FadeOutUpdate();
 		break;
 	}
 
-	if (player->gameClear())
+	if (changeScene)
 	{
-		if (Pad::isTrigger(PAD_INPUT_4))
-		{
-			return(new SceneTitle);
-		}
+		return(new SceneTitle);
 	}
-
+	
 	return this;
 }
 
@@ -87,16 +89,32 @@ void SceneTutorial::draw()
 	{
 		drawClear();
 	}
+
+	//今から書く画像と、すでに描画されているスクリーンとの
+   //ブレンドの仕方を指定している。
+	SetDrawBlendMode(DX_BLENDMODE_ALPHA, fadeValue);
+	//画面全体を真っ黒に塗りつぶす
+	DrawBox(0, 0, Game::kScreenWidth, Game::kScreenHight, 0x000000, true);
+
+	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 0);
 }
 
-void SceneTutorial::updateWait()
+void SceneTutorial::FadeInUpdate()
 {
-	SceneBase::updateFade();
-	if (isFading())	return;	// フェードイン、アウト中は動かない
-	m_seq = Seq::SeqUpdata;
+	player->updata();
+	map->updata();
+	//真っ黒から徐々に表示する場合場合
+	fadeValue = 255 * (static_cast<float>(fadeTimer) / static_cast<float>(fade_interval));
+	//グラデーションを使って徐々に表示する場合
+	/*fadeTimer_;*/
+	if (fadeTimer-- == 0)
+	{
+		m_seq = Seq::SeqUpdata;
+		fadeValue = 0;
+	}
 }
 
-void SceneTutorial::updateGame()
+void SceneTutorial::NormalUpdate()
 {
 	player->updata();
 	map->updata();
@@ -113,7 +131,7 @@ void SceneTutorial::updateGame()
 	Sound::setVolume(Sound::SoundId_BgmEasy, volume);
 }
 
-void SceneTutorial::updateClear()
+void SceneTutorial::ClearUpdate()
 {
 	map->clearUpdata();
 	refreshScore();
@@ -134,6 +152,20 @@ void SceneTutorial::updateClear()
 	if (volume == 0)
 	{
 		Sound::stopBgm(Sound::SoundId_BgmEasy);
+	}
+	//クリア後Yボタンを押すとタイトルへ
+	if (Pad::isTrigger(PAD_INPUT_4))
+	{
+		m_seq = Seq::SeqFadeOut;
+	}
+}
+
+void SceneTutorial::FadeOutUpdate()
+{
+	fadeValue = 255 * (static_cast<float>(fadeTimer) / static_cast<float>(fade_interval));
+	if (fadeTimer++ == fade_interval)
+	{
+		changeScene = true;
 	}
 }
 
@@ -189,10 +221,6 @@ void SceneTutorial::refreshScore()
 		fprintf_s(fp, "%d",temp);
 		fclose(fp);
 	}
-	/*else if (fp == NULL || hiscore < temp)
-	{
-		DrawFormatString(250, 450, GetColor(255, 255, 255), "1位は%d秒", hiscore);
-	}*/
 }
 
 int SceneTutorial::getHiScore()
