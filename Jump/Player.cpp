@@ -320,22 +320,8 @@ void Player::jump(float MoveX, float MoveY)
 //キャラクターのアニメーション
 void Player::cAnimation(bool walk)
 {
-	//idel状体
-	if (idel)
-	{
-		IdelInterval++;
-		if (chipNum > 9)
-		{
-			chipNum = 0;
-		}
-		if (IdelInterval == 10)
-		{
-			chipNum++;
-			IdelInterval = 0;
-		}
-	}
 	//歩いているとき
-	else if (walk)
+	if (walk)
 	{
 		if (chipNum < 10)
 		{
@@ -352,6 +338,20 @@ void Player::cAnimation(bool walk)
 		}
 		IdelInterval++;
 	}
+	//idel状体
+	/*else if (idel)
+	{
+		IdelInterval++;
+		if (chipNum > 9)
+		{
+			chipNum = 0;
+		}
+		if (IdelInterval == 10)
+		{
+			chipNum++;
+			IdelInterval = 0;
+		}
+	}*/
 	//ジャンプ前チャージ
 	else if (charge)
 	{
@@ -433,7 +433,7 @@ int Player::movePlayer(float MoveX, float MoveY)
 
 	// 接地判定
 		// キャラクタの左下と右下の下に地面があるか調べる
-	if (pmap->GetChipParam(x + m_size * 0.5f - 16, y + m_size * 0.5f + 1.0f) == 5)
+	if (pmap->GetChipParam(x + m_size * 0.5f - 16, y + m_size * 0.5f + 1.0f) == 176)
 	{
 		// 足場が無かったらジャンプ中にする
 		jumpFlag = TRUE;
@@ -464,7 +464,15 @@ int Player::mapHitCheck(float X, float Y, float& MoveX, float& MoveY)
 	afterY = Y + MoveY;
 
 	// 当たり判定のあるブロックに当たっているかチェック
-	if (pmap->GetChipParam(afterX, afterY) == 2)
+	if (pmap->GetChipParam(afterX, afterY) == 12 || pmap->GetChipParam(afterX, afterY) == 13 ||
+		pmap->GetChipParam(afterX, afterY) == 14 || pmap->GetChipParam(afterX, afterY) == 15 ||
+		pmap->GetChipParam(afterX, afterY) == 22 || pmap->GetChipParam(afterX, afterY) == 23 ||
+		pmap->GetChipParam(afterX, afterY) == 24 || pmap->GetChipParam(afterX, afterY) == 6 ||
+		pmap->GetChipParam(afterX, afterY) == 7 || pmap->GetChipParam(afterX, afterY) == 8 ||
+		pmap->GetChipParam(afterX, afterY) == 28 || pmap->GetChipParam(afterX, afterY) == 29 ||
+		pmap->GetChipParam(afterX, afterY) == 30 || pmap->GetChipParam(afterX, afterY) == 45 ||
+		pmap->GetChipParam(afterX, afterY) == 46 ||
+		pmap->GetChipParam(afterX, afterY) == 31 || pmap->GetChipParam(afterX, afterY) == 47)
 	{
 		float blockLeftX, blockTopY, blockRightX, blockBottomY;
 

@@ -6,10 +6,10 @@ namespace
 {
 	// マップチップロード
 	constexpr int MapSize = 32;   //マップチップサイズ
-	constexpr int MapChipX = 10;  // 横10種類
-	constexpr int MapChipY = 4;   // 縦4種類1
+	constexpr int MapChipX = 16;  // 横10種類
+	constexpr int MapChipY = 11;   // 縦4種類1
 	constexpr int MapChipAll = MapChipX * MapChipY; // 合計40個
-	constexpr int MapStage = 10;		//ステージ数
+	constexpr int MapStage = 11;		//ステージ数
 	constexpr int NUM_MAP_X = Game::kScreenWidth / MapSize; 
 	constexpr int NUM_MAP_Y = (Game::kScreenHight / MapSize) * MapStage; 
 
