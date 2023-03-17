@@ -3,15 +3,7 @@
 class SceneOpening : public SceneBase
 {
 public:
-	SceneOpening() 
-	{
-		m_textBlinkFrame = 0;
-		//m_displayCount = 0;
-		nextScene = false;
-		m_titleHandle = -1;
-		m_clip = -1;
-		m_seq = Seq::SeqFadeIn;
-	}
+	SceneOpening();
 	virtual ~SceneOpening() {}
 
 
@@ -42,12 +34,9 @@ private:
 	static constexpr int fade_interval = 60;
 	int fadeTimer = fade_interval;		//フェードタイマー
 	int fadeValue = 255;				//黒短形のブレンド具合
-	//　
-	//int m_displayCount;
+	
 	// タイトル
 	int m_titleHandle;
-	//デモ映像
-	int m_clip;
 	// テキスト点滅用フレームカウント
 	int m_textBlinkFrame;
 	//フォントの座標
@@ -55,7 +44,7 @@ private:
 	int m_fontY;
 	//フォントを上下移動させるためのsin
 	float sinRate;
-
-	bool nextScene;
+	//次のシーンに行けるか
+	bool chageScene;
 };
 

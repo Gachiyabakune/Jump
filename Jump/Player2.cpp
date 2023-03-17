@@ -8,6 +8,9 @@
 Player2::Player2() :
 	x(0),
 	y(0),
+	lineY(0),
+	m_size(0),
+	fallFlag(false),
 	pEmap(nullptr),
 	moveFlag(false),
 	jumpAfterInterval(true),
@@ -19,6 +22,11 @@ Player2::Player2() :
 	charge(false),
 	jumpPower(0)
 {
+	fallSpeed = 0.0f;
+	for (int i = 0; i < 40; i++)
+	{
+		Cchip[i] = 0;
+	}
 }
 
 Player2::~Player2()

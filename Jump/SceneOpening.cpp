@@ -20,6 +20,18 @@ namespace
     const int kColor = GetColor(0, 0, 0);
 }
 
+SceneOpening::SceneOpening() :
+    m_textBlinkFrame(0),
+    m_titleHandle(-1),
+    m_fontX(0),
+    m_fontY(0),
+    chageScene(false)
+
+{
+    sinRate = 0.0f;
+    m_seq = Seq::SeqFadeIn;
+}
+
 void SceneOpening::init()
 {
     m_textBlinkFrame = 0;
@@ -32,7 +44,7 @@ void SceneOpening::init()
 
     sinRate = 0.0f;
 
-    nextScene = false;
+    chageScene = false;
 }
 
 void SceneOpening::end()
@@ -55,7 +67,7 @@ SceneBase* SceneOpening::update()
         FadeOutUpdate();
         break;
     }
-    if (nextScene)
+    if (chageScene)
     {
         return (new SceneTitle);
     }
@@ -66,7 +78,7 @@ SceneBase* SceneOpening::update()
 void SceneOpening::draw()
 {
  
-    int moveY = sinf(sinRate * 2) * 4;
+    int moveY = static_cast<int>(sinf(sinRate * 2) * 4);
     DrawGraph(m_fontX, m_fontY + moveY, m_titleHandle, false);
 
     //テキスト点滅
@@ -129,6 +141,6 @@ void SceneOpening::FadeOutUpdate()
     fadeValue = 255 * (static_cast<float>(fadeTimer) / static_cast<float>(fade_interval));
     if (fadeTimer++ == fade_interval)
     {
-        nextScene = true;
+        chageScene = true;
     }
 }

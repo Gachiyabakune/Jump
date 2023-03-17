@@ -5,13 +5,7 @@
 class SceneTutorial : public SceneBase
 {
 public:
-	SceneTutorial()
-	{
-		m_seq = Seq::SeqFadeIn;
-		m_timeTaken = 0;
-		m_timer = 0;
-		temp = 10000;
-	}
+	SceneTutorial();
 	virtual ~SceneTutorial();
 
 
@@ -56,7 +50,7 @@ private:
 
 	//‚©‚©‚Á‚½ŽžŠÔ
 	int m_timeTaken;
-	int temp;
+	int frstPlaceTime;
 	int m_timer;
 	//ƒtƒHƒ“ƒgŠÖŒW
 	int textHeight;

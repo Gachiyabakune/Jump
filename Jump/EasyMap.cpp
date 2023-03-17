@@ -74,8 +74,15 @@ EasyMap::EasyMap() :
 	nowStage(0),
 	cloudX(0),
 	cloudY(0),
+	skyHandle(-1),
+	cloudHandle(-1),
+	cloudHandle2(-1),
 	pPlayer(nullptr)
 {
+	for (int i = 0; i < 176; i++)
+	{
+		Mchip[i] = 0;
+	}
 }
 
 

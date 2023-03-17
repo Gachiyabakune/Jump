@@ -1,6 +1,6 @@
 #include "SceneTutorial.h"
 #include "SceneTitle.h"
-#include "SceneResult.h"
+#include "SceneOption.h"
 #include "DxLib.h"
 #include "Sound.h"
 #include "Pad.h"
@@ -13,6 +13,21 @@ namespace
 	const char* const kTitkeMessage = "GAME CLEAR";
 	constexpr int kStandbyTime = 60;	//クリア後からフォントが出てくるまでの時間
 	constexpr int kStandbyTime2 = 180;	//ランキングなどが出てくる時間
+}
+
+SceneTutorial::SceneTutorial():
+	textHeight(0),
+    textWidth(0),
+    textDispWidth(0),
+    fontHandle(0),
+	m_timeTaken(0),
+	m_timer(0),
+	handle(0),
+	hiscore(0),
+	changeScene(false)
+{
+	m_seq = Seq::SeqFadeIn;
+	frstPlaceTime = 10000;
 }
 
 SceneTutorial::~SceneTutorial()
@@ -45,7 +60,7 @@ void SceneTutorial::init()
 
 	//文字列をグラフィックに
 	textHeight = 100;
-	textWidth = GetDrawStringWidthToHandle(kTitkeMessage, strlen(kTitkeMessage), fontHandle);
+	textWidth = GetDrawStringWidthToHandle(kTitkeMessage, static_cast<int>(strlen(kTitkeMessage)), fontHandle);
 	// 文字列グラフィックを生成
 	handle = MakeScreen(textWidth, textHeight, true);
 
@@ -136,7 +151,7 @@ void SceneTutorial::ClearUpdate()
 	map->clearUpdata();
 	refreshScore();
 	m_timer++;	//タイマー
-	temp = m_timeTaken / 60;
+	frstPlaceTime = m_timeTaken / 60;
 	if (m_timer > kStandbyTime)	//10秒間スクロールした後に
 	{
 		textDispWidth++;
@@ -185,19 +200,19 @@ void SceneTutorial::drawClear()
 	}
 	if (m_timer > kStandbyTime2)
 	{
-		DrawFormatString(250, 400, GetColor(255, 255, 255), "タイム%d秒", temp);	//Y座標
+		DrawFormatString(250, 400, GetColor(255, 255, 255), "タイム%d秒", frstPlaceTime);	//Y座標
 
-		if (temp < hiscore)
+		if (frstPlaceTime < hiscore)
 		{
-			DrawFormatString(250, 430, GetColor(255, 255, 255), "ランキング1位になりました:%d秒", temp);
+			DrawFormatString(250, 430, GetColor(255, 255, 255), "ランキング1位になりました:%d秒", frstPlaceTime);
 		}
-		else if (temp > hiscore)
+		else if (frstPlaceTime > hiscore)
 		{
 			DrawFormatString(250, 430, GetColor(255, 255, 255), "ランキング1位のタイム:%d秒", hiscore);
 		}
 		else
 		{
-			DrawFormatString(250, 430, GetColor(255, 255, 255), "ランキング1位になりました:%d秒", temp);
+			DrawFormatString(250, 430, GetColor(255, 255, 255), "ランキング1位になりました:%d秒", frstPlaceTime);
 		}
 
 		DrawString(250, 460, "Yボタンでタイトルへ", GetColor(255, 255, 255));
@@ -215,10 +230,10 @@ void SceneTutorial::refreshScore()
 		fscanf_s(fp, "%d", &hiscore);
 		fclose(fp);
 	}
-	if (fp == NULL || hiscore > temp)
+	if (fp == NULL || hiscore > frstPlaceTime)
 	{
 		error = fopen_s(&fp, "test.txt", "w");
-		fprintf_s(fp, "%d",temp);
+		fprintf_s(fp, "%d",frstPlaceTime);
 		fclose(fp);
 	}
 }

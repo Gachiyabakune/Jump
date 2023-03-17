@@ -26,6 +26,8 @@ public:
 	void updata();
 	void draw();
 	
+	void clearUpdata();
+
 	void setPlayer(Player* player) { pPlayer = player; }
 
 	int getoffset() { return offset; }

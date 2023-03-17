@@ -3,7 +3,7 @@
 #include "SceneMain.h"
 #include "SceneTutorial.h"
 #include "SceneOpening.h"
-#include "SceneResult.h"
+#include "SceneOption.h"
 #include "Sound.h"
 #include "Pad.h"
 #include "game.h"
@@ -31,6 +31,10 @@ SceneTitle::SceneTitle() :
 	frameCount(0)
 {
 	sinRate = 0.0f;
+	for (int i = 0; i < 40; i++)
+	{
+		chip[i] = 0;
+	}
 }
 
 void SceneTitle::init()
@@ -108,7 +112,7 @@ SceneBase* SceneTitle::update()
 			break;
 		case 2:
 			Sound::play(Sound::SoundId_Decision);
-			return (new SceneResult);
+			return (new SceneOption);
 			break;
 		case 3:
 			Sound::play(Sound::SoundId_Decision);
@@ -148,7 +152,7 @@ void SceneTitle::draw()
 				r = 0xff;
 				g = 0x40;
 				b = 0x40;
-				cursorY = posY;
+				cursorY = static_cast<float>(posY);
 			}
 		}
 		else
@@ -174,12 +178,12 @@ void SceneTitle::draw()
 		DrawStringToHandle(350, posY, kMenuItemMessage[i], GetColor(r, g, b), menuItemHandle);
 	}
 	{
-		int cursorHeight = sinf(sinRate) * 12.0f;	// 実際にはHeight/2
-		DrawTriangle(335, cursorY + 12,
-			325, cursorY + 12 - cursorHeight,
-			325, cursorY + 12 + cursorHeight, 0xff0000, true);
-		DrawTriangle(335, cursorY + 12,
-			325, cursorY + 12 - cursorHeight,
-			325, cursorY + 12 + cursorHeight, 0xffffff, false);
+		int cursorHeight = static_cast<int>(sinf(sinRate) * 12.0f);	// 実際にはHeight/2
+		DrawTriangle(335, static_cast<int>(cursorY) + 12,
+			325, static_cast<int>(cursorY) + 12 - cursorHeight,
+			325, static_cast<int>(cursorY) + 12 + cursorHeight, 0xff0000, true);
+		DrawTriangle(335, static_cast<int>(cursorY) + 12,
+			325, static_cast<int>(cursorY) + 12 - cursorHeight,
+			325, static_cast<int>(cursorY) + 12 + cursorHeight, 0xffffff, false);
 	}
 }

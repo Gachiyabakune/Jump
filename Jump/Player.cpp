@@ -8,7 +8,10 @@
 Player::Player() : 
 	x(0),
 	y(0),
+	m_size(0),
+	lineY(0),
 	pmap(nullptr),
+	fallFlag(false),
 	moveFlag(false),
 	jumpAfterInterval(true),
 	boundFlag(false),
@@ -19,6 +22,11 @@ Player::Player() :
 	charge(false),
 	jumpPower(0)
 {
+	fallSpeed = 0.0f;
+	for (int i = 0; i < 40; i++)
+	{
+		Cchip[i] = 0;
+	}
 }
 
 Player::~Player()
@@ -544,8 +552,8 @@ int Player::mapHitCheck(float X, float Y, float& MoveX, float& MoveY)
 		return 4;
 	}
 
-	/*------クリアの時(3に当たった時)フラグを返す------*/
-	if ( pmap->GetChipParam(afterX, afterY) == 3)
+	/*------クリアの時(156に当たった時)フラグを返す------*/
+	if ( pmap->GetChipParam(afterX, afterY) == 156)
 	{
 		float blockLeftX, blockTopY, blockRightX, blockBottomY;
 
