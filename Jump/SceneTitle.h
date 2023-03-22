@@ -21,6 +21,7 @@ private:
 	int cursorMoveFrame;
 	//フォント
 	int menuItemHandle;
+	int fontHandle;
 	//インターバル
 	int m_interval;
 	int frameCount;

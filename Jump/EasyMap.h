@@ -36,6 +36,7 @@ private:
 	Player2* pPlayer;
 	int offset;
 	int Mchip[ChipAll];
+	int goolChip[26];
 	int nowStage;
 	int mapChangeInterval;
 	int skyHandle;

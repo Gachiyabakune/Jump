@@ -19,7 +19,7 @@ namespace
 		"END",
 	};
 	// カーソル
-	constexpr int kCursorMoveFrame = 30;
+	constexpr int kCursorMoveFrame = 6;
 }
 
 SceneTitle::SceneTitle() :
@@ -27,6 +27,7 @@ SceneTitle::SceneTitle() :
 	cursorNext(0),
 	cursorMoveFrame(0),
 	menuItemHandle(0),
+	fontHandle(0),
 	m_interval(0),
 	frameCount(0)
 {
@@ -51,6 +52,7 @@ void SceneTitle::init()
 
 	m_interval = 0;
 	menuItemHandle = CreateFontToHandle("メイリオ", 24, 8, DX_FONTTYPE_ANTIALIASING_8X8);
+	fontHandle = CreateFontToHandle("游ゴシック　中", 32, 8, DX_FONTTYPE_ANTIALIASING_8X8);
 }
 
 SceneBase* SceneTitle::update()
@@ -67,7 +69,7 @@ SceneBase* SceneTitle::update()
 			cursorNext = 0;
 		}
 		cursorMoveFrame = kCursorMoveFrame;
-		m_interval = 30;
+		m_interval = 6;
 		Sound::play(Sound::SoundId_Select);
 	}
 	//上キー
@@ -79,7 +81,7 @@ SceneBase* SceneTitle::update()
 			cursorNext = _countof(kMenuItemMessage) - 1;
 		}
 		cursorMoveFrame = kCursorMoveFrame;
-		m_interval = 30;
+		m_interval = 6;
 		Sound::play(Sound::SoundId_Select);
 	}
 	if (cursorIndex != cursorNext)
@@ -132,9 +134,10 @@ SceneBase* SceneTitle::update()
 void SceneTitle::draw()
 {
 	DrawGraph(270, 200, chip[21], TRUE);
-	SetFontSize(32);
-	DrawString(300, 200, "をみつけだせ", GetColor(255, 255, 255));
-	SetFontSize(16);
+	//SetFontSize(32);
+	//DrawString(300, 200, "をみつけだせ", GetColor(255, 255, 255));
+	DrawStringToHandle(300, 200, "をみつけだせ", GetColor(255, 255, 255),fontHandle);
+	//SetFontSize(16);
 
 	DrawString(330, 280, "Bボタンで選択", GetColor(255, 255, 255));
 

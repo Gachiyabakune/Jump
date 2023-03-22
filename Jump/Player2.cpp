@@ -10,6 +10,7 @@ Player2::Player2() :
 	y(0),
 	lineY(0),
 	m_size(0),
+	test(0),
 	fallFlag(false),
 	pEmap(nullptr),
 	moveFlag(false),
@@ -113,6 +114,35 @@ void Player2::updata()
 			revers = false;
 		}
 	}
+
+	if (jumpPower == CTLv1)
+	{
+		test = 1;
+	}
+	else if (jumpPower == CTLv2)
+	{
+		test = 2;
+	}
+	else if (jumpPower == CTLv3)
+	{
+		test = 3;
+	}
+	else if (jumpPower == CTLv4)
+	{
+		test = 4;
+	}
+	else if (jumpPower == CTLv5)
+	{
+		test = 5;
+	}
+	else if (jumpPower == CTLvMax)
+	{
+		test = 6;
+	}
+	if (jumpPower == 0)
+	{
+		test = 0;
+	}
 	//ジャンプ処理
 	jump(MoveX, MoveY);
 	//キャラクターのアニメーション
@@ -159,6 +189,63 @@ void Player2::draw()
 			(int)(y - 48 * 0.5f + pEmap->getoffset()),
 			Cchip[chipNum], TRUE);
 	}
+
+	//ジャンプゲージ
+	DrawBox((int)(x - m_size * 0.5f),
+		(int)(y - m_size * 0.5f + pEmap->getoffset()-10.0f),
+		(int)(x - m_size * 0.5f) + m_size,
+		(int)(y - m_size * 0.5f + pEmap->getoffset() - 5.0f),
+		GetColor(0, 0, 0), TRUE);
+
+	if (test == 1)
+	{
+		DrawBox((int)(x - m_size * 0.5f),
+			(int)(y - m_size * 0.5f + pEmap->getoffset() - 10.0f),
+			(int)(x - m_size * 0.5f) + 5.3f,
+			(int)(y - m_size * 0.5f + pEmap->getoffset() - 5.0f),
+			GetColor(0, 191, 255), TRUE);
+	}
+	else if (test == 2)
+	{
+		DrawBox((int)(x - m_size * 0.5f),
+			(int)(y - m_size * 0.5f + pEmap->getoffset() - 10.0f),
+			(int)(x - m_size * 0.5f) + 10.6f,
+			(int)(y - m_size * 0.5f + pEmap->getoffset() - 5.0f),
+			GetColor(0, 255, 0), TRUE);
+	}
+	else if(test == 3)
+	{
+		DrawBox((int)(x - m_size * 0.5f),
+			(int)(y - m_size * 0.5f + pEmap->getoffset() - 10.0f),
+			(int)(x - m_size * 0.5f) + 15.9f,
+			(int)(y - m_size * 0.5f + pEmap->getoffset() - 5.0f),
+			GetColor(173, 255, 47), TRUE);
+	}
+	else if(test == 4)
+	{
+		DrawBox((int)(x - m_size * 0.5f),
+			(int)(y - m_size * 0.5f + pEmap->getoffset() - 10.0f),
+			(int)(x - m_size * 0.5f) + 21.2f,
+			(int)(y - m_size * 0.5f + pEmap->getoffset() - 5.0f),
+			GetColor(255, 255, 0), TRUE);
+	}
+	else if(test == 5)
+	{
+		DrawBox((int)(x - m_size * 0.5f),
+			(int)(y - m_size * 0.5f + pEmap->getoffset() - 10.0f),
+			(int)(x - m_size * 0.5f) + 26.5f,
+			(int)(y - m_size * 0.5f + pEmap->getoffset() - 5.0f),
+			GetColor(255, 140, 0), TRUE);
+	}
+	else if(test == 6)
+	{
+		DrawBox((int)(x - m_size * 0.5f),
+			(int)(y - m_size * 0.5f + pEmap->getoffset() - 10.0f),
+			(int)(x - m_size * 0.5f) + 32.0f,
+			(int)(y - m_size * 0.5f + pEmap->getoffset() - 5.0f),
+			GetColor(255, 0, 0), TRUE);
+	}
+	
 #ifdef _DEBUG
 	//四角 飛べるときは赤色,飛べない時は黄色
 	if (!jumpFlag)
@@ -186,6 +273,15 @@ void Player2::draw()
 
 	DrawFormatString(0, 80, GetColor(255, 255, 255), " Jpower : %d", jumpPower);	//ジャンプパワー
 	DrawFormatString(0, 200, GetColor(255, 255, 255), "%d", chipNum);
+	if (moveFlag)
+	{
+		DrawString(0, 220, "true", GetColor(255, 255, 255));
+	}
+	else
+	{
+		DrawString(0, 220, "false", GetColor(255, 255, 255));
+	}
+	DrawFormatString(0, 240,GetColor(255, 255, 255), "%d", test);
 #endif
 }
 
@@ -224,7 +320,7 @@ void Player2::jump(float MoveX, float MoveY)
 			}
 		}
 		//ボタンを離した時かカウントがたまると強制ジャンプ
-		if (Pad::isRelase(PAD_INPUT_1) || jumpPower == CTLvMax)
+		if (Pad::isRelase(PAD_INPUT_1))
 		{
 			//ため段階が短いと小ジャンプ
 			if (CTLv1 >= jumpPower)
@@ -292,9 +388,10 @@ void Player2::jump(float MoveX, float MoveY)
 				}
 			}
 			//レベルMaxジャンプ
-			else if (CTLvMax == jumpPower)
+			else if (CTLvMax <= jumpPower)
 			{
 				fallSpeed = -LvMax;
+				test = 6;
 				if (direction == 1)
 				{
 					directionJump = 1;

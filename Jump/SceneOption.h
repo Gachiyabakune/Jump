@@ -39,5 +39,7 @@ private:
 	bool nextScene;
 
 	//‰æ‘œ
-	int handle;
+	int backHandle;
+	//ƒtƒHƒ“ƒg
+	int explanationHandle;
 };

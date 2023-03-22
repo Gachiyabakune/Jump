@@ -46,5 +46,7 @@ private:
 	float sinRate;
 	//Ÿ‚ÌƒV[ƒ“‚És‚¯‚é‚©
 	bool chageScene;
+	//‰æ‘œ
+	int backHandle;
 };
 

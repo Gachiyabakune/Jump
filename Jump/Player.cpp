@@ -10,8 +10,8 @@ Player::Player() :
 	y(0),
 	m_size(0),
 	lineY(0),
+	test(0),
 	pmap(nullptr),
-	fallFlag(false),
 	moveFlag(false),
 	jumpAfterInterval(true),
 	boundFlag(false),
@@ -114,6 +114,35 @@ void Player::updata()
 			revers = false;
 		}
 	}
+
+	if (jumpPower == ChargeTimeLv1)
+	{
+		test = 1;
+	}
+	else if (jumpPower == ChargeTimeLv2)
+	{
+		test = 2;
+	}
+	else if (jumpPower == ChargeTimeLv3)
+	{
+		test = 3;
+	}
+	else if (jumpPower == ChargeTimeLv4)
+	{
+		test = 4;
+	}
+	else if (jumpPower == ChargeTimeLv5)
+	{
+		test = 5;
+	}
+	else if (jumpPower == ChargeTimeLvMax)
+	{
+		test = 6;
+	}
+	if (jumpPower == 0)
+	{
+		test = 0;
+	}
 	//ジャンプ処理
 	jump(MoveX, MoveY);
 	//キャラクターのアニメーション
@@ -160,6 +189,62 @@ void Player::draw()
 		DrawTurnGraph((int)(x - 48 * 0.5f),
 			(int)(y - 48 * 0.5f + pmap->getoffset()),
 			Cchip[chipNum], TRUE);
+	}
+
+	//ジャンプゲージ
+	DrawBox((int)(x - m_size * 0.5f),
+		(int)(y - m_size * 0.5f + pmap->getoffset() - 10.0f),
+		(int)(x - m_size * 0.5f) + m_size,
+		(int)(y - m_size * 0.5f + pmap->getoffset() - 5.0f),
+		GetColor(0, 0, 0), TRUE);
+
+	if (test == 1)
+	{
+		DrawBox((int)(x - m_size * 0.5f),
+			(int)(y - m_size * 0.5f + pmap->getoffset() - 10.0f),
+			(int)(x - m_size * 0.5f) + 5.3f,
+			(int)(y - m_size * 0.5f + pmap->getoffset() - 5.0f),
+			GetColor(0, 191, 255), TRUE);
+	}
+	else if (test == 2)
+	{
+		DrawBox((int)(x - m_size * 0.5f),
+			(int)(y - m_size * 0.5f + pmap->getoffset() - 10.0f),
+			(int)(x - m_size * 0.5f) + 10.6f,
+			(int)(y - m_size * 0.5f + pmap->getoffset() - 5.0f),
+			GetColor(0, 255, 0), TRUE);
+	}
+	else if (test == 3)
+	{
+		DrawBox((int)(x - m_size * 0.5f),
+			(int)(y - m_size * 0.5f + pmap->getoffset() - 10.0f),
+			(int)(x - m_size * 0.5f) + 15.9f,
+			(int)(y - m_size * 0.5f + pmap->getoffset() - 5.0f),
+			GetColor(173, 255, 47), TRUE);
+	}
+	else if (test == 4)
+	{
+		DrawBox((int)(x - m_size * 0.5f),
+			(int)(y - m_size * 0.5f + pmap->getoffset() - 10.0f),
+			(int)(x - m_size * 0.5f) + 21.2f,
+			(int)(y - m_size * 0.5f + pmap->getoffset() - 5.0f),
+			GetColor(255, 255, 0), TRUE);
+	}
+	else if (test == 5)
+	{
+		DrawBox((int)(x - m_size * 0.5f),
+			(int)(y - m_size * 0.5f + pmap->getoffset() - 10.0f),
+			(int)(x - m_size * 0.5f) + 26.5f,
+			(int)(y - m_size * 0.5f + pmap->getoffset() - 5.0f),
+			GetColor(255, 140, 0), TRUE);
+	}
+	else if (test == 6)
+	{
+		DrawBox((int)(x - m_size * 0.5f),
+			(int)(y - m_size * 0.5f + pmap->getoffset() - 10.0f),
+			(int)(x - m_size * 0.5f) + 32.0f,
+			(int)(y - m_size * 0.5f + pmap->getoffset() - 5.0f),
+			GetColor(255, 0, 0), TRUE);
 	}
 #ifdef _DEBUG
 	//四角 飛べるときは赤色,飛べない時は黄色
@@ -222,7 +307,7 @@ void Player::jump(float MoveX, float MoveY)
 			}
 		}
 		//ボタンを離した時かカウントがたまると強制ジャンプ
-		if (Pad::isRelase(PAD_INPUT_1) || jumpPower == ChargeTimeLvMax)
+		if (Pad::isRelase(PAD_INPUT_1))
 		{
 			//ため段階が短いと小ジャンプ
 			if (ChargeTimeLv1 >= jumpPower)
@@ -290,9 +375,10 @@ void Player::jump(float MoveX, float MoveY)
 				}
 			}
 			//レベルMaxジャンプ
-			else if (ChargeTimeLvMax == jumpPower)
+			else if (ChargeTimeLvMax <= jumpPower)
 			{
 				fallSpeed = -JumpPowerLvMax;
+				test = 6;
 				if (direction == 1)
 				{
 					directionJump = 1;

@@ -9,7 +9,7 @@ namespace
 namespace
 {
 	constexpr float G = 0.3f;			//重力
-	constexpr float LvMax = 12.0f;	//最大ジャンプ力
+	constexpr float LvMax = 12.5f;	//最大ジャンプ力
 	constexpr float Lv5 = 12.0f;	//Lv5
 	constexpr float Lv4 = 10.0f;		//Lv4
 	constexpr float Lv3 = 8.0f;	//Lv3
@@ -60,6 +60,7 @@ private:
 	int Cchip[CChipAll];
 	int jumpPower;	//ジャンプパワー
 	int lineY;		//Y座標
+	int test;
 
 	int directionJump = 0;	//ジャンプ方向
 	int direction = 0;		//どの方向に飛ぶかを決める

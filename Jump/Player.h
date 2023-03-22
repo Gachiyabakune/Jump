@@ -60,6 +60,8 @@ private:
 	int jumpPower;	//ジャンプパワー
 	int lineY;		//Y座標
 
+	int test;
+
 	int directionJump = 0;	//ジャンプ方向
 	int direction = 0;		//どの方向に飛ぶかを決める
 	int chipNum = 0;		//キャラクターのアニメーションs

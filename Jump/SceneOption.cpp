@@ -2,10 +2,12 @@
 #include "SceneOption.h"
 #include "DxLib.h"
 #include "SceneMain.h"
+#include "game.h"
 #include "Pad.h"
 
 SceneOption::SceneOption() :
-    handle(-1),
+    backHandle(-1),
+    explanationHandle(-1),
 	nextScene(false)
 {
 	m_seq = Seq::SeqFadeIn;
@@ -14,7 +16,9 @@ SceneOption::SceneOption() :
 void SceneOption::init()
 {
 	nextScene = false;
-    //handle = LoadGraph("data/pad.png");
+    backHandle = LoadGraph("data/sora.png");
+
+    explanationHandle = CreateFontToHandle("メイリオ", 20, 8, DX_FONTTYPE_ANTIALIASING_8X8);
 }
 
 SceneBase* SceneOption::update()
@@ -40,12 +44,16 @@ SceneBase* SceneOption::update()
 
 void SceneOption::draw()
 {
-	DrawString(4, 0, "Aボタンでジャンプ", GetColor(255, 255, 255));
-	DrawString(4, 20, "長押しでジャンプ力が変わるよ", GetColor(255, 255, 255));
-	DrawString(4, 40, "方向キーで飛ぶ方向が変わるよ", GetColor(255, 255, 255));
-	DrawString(4, 60, "Yボタンでタイトルへ", GetColor(255, 255, 255));
+    DrawGraph(0, 0, backHandle, false);
 
-    //DrawGraph(0, 0, handle, false);
+    DrawStringToHandle((Game::kScreenWidth/2)-120, (Game::kScreenHight/2)-80, 
+        "Aボタンでジャンプ", GetColor(0, 0, 0), explanationHandle);
+    DrawStringToHandle((Game::kScreenWidth / 2) - 120, (Game::kScreenHight / 2) - 50,
+        "長押しでジャンプ力が変わるよ", GetColor(0, 0, 0), explanationHandle);
+    DrawStringToHandle((Game::kScreenWidth / 2) - 120, (Game::kScreenHight / 2) - 20,
+        "方向キーで飛ぶ方向が変わるよ", GetColor(0, 0, 0), explanationHandle);
+    DrawStringToHandle((Game::kScreenWidth / 2) - 120, (Game::kScreenHight / 2) +10,
+        "Yボタンでタイトルへ", GetColor(0, 0, 0), explanationHandle);
 }
 
 void SceneOption::FadeInUpdate()

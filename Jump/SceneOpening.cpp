@@ -23,6 +23,7 @@ namespace
 SceneOpening::SceneOpening() :
     m_textBlinkFrame(0),
     m_titleHandle(-1),
+    backHandle(-1),
     m_fontX(0),
     m_fontY(0),
     chageScene(false)
@@ -38,6 +39,7 @@ void SceneOpening::init()
     SetFontSize(20);
 
     m_titleHandle = LoadGraph("Title/title.png");
+    backHandle = LoadGraph("data/sora.png");
 
     m_fontX = 200;
     m_fontY = 200;
@@ -77,16 +79,16 @@ SceneBase* SceneOpening::update()
 
 void SceneOpening::draw()
 {
- 
+    DrawGraph(0, 0, backHandle, false);
     int moveY = static_cast<int>(sinf(sinRate * 2) * 4);
-    DrawGraph(m_fontX, m_fontY + moveY, m_titleHandle, false);
+    DrawGraph(m_fontX, m_fontY + moveY, m_titleHandle, true);
 
     //テキスト点滅
     if (m_textBlinkFrame < kTextDispFrame)
     {
         DrawString((Game::kScreenWidth / 2) - 75,
             (Game::kScreenHight / 2) + 120,
-            "Press the key", kFontColor, false);
+            "Press the key", kColor, false);
     }
 
     //今から書く画像と、すでに描画されているスクリーンとの
