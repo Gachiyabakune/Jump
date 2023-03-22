@@ -104,7 +104,12 @@ void EasyMap::init()
 		26, 1,
 		32, 32,
 		goolChip);*/
-
+		//マップ
+	//LoadDivGraph("data/mapchip.png",
+	//	40,
+	//	10, 4,
+	//	32, 32,
+	//	goolChip);
 	//マップ
 	LoadDivGraph("data/b.jpg",
 		ChipAll,
@@ -183,14 +188,14 @@ void EasyMap::draw()
 			int posX = x * ChipSize;
 			int posY = y * ChipSize + offset;
 			int idx = MapData[y][x];
-			if (idx != 156)
+			//if (idx != 156)
 			{
 				DrawGraph(posX, posY, Mchip[idx], FALSE);
 			}
-			else if(idx == 156)
+		/*	else if(idx == 156)
 			{
-				DrawGraph(posX, posY, goolChip[25], FALSE);
-			}
+				DrawGraph(posX, posY, goolChip[21], FALSE);
+			}*/
 		}
 	}
 }

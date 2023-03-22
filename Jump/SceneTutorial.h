@@ -24,8 +24,11 @@ private:
 	void ClearUpdate();
 	//フェードアウトの時のUpdate関数
 	void FadeOutUpdate();
+	//オプション時のupdate
+	void OptionUpdate();
 
-	virtual void drawClear();	//クリア後のdraw処理
+	void drawClear();	//クリア後のdraw処理
+	void drawOption();
 
 	void refreshScore();
 	int getHiScore();
@@ -39,6 +42,7 @@ private:
 		SeqUpdata,			//通常のupdata
 		SeqClearUpdata,		//クリア後のupdata
 		SeqFadeOut,		//フェードアウト
+		SeqOption,
 	};
 	// 現在のゲームシーケンス
 	Seq m_seq;
@@ -66,4 +70,18 @@ private:
 
 	//シーン切り替え
 	bool changeScene;
+	
+private:
+	//オプション
+	bool option;
+	//フォント
+	int menuItemHandle;
+	// カーソル移動
+	int cursorIndex;
+	int cursorNext;
+	int cursorMoveFrame;
+	//インターバル
+	int m_interval;
+	//サイン
+	float sinRate;
 };
